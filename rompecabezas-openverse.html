@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<title>Rompecabezas · Galerías Openverse</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#eef0f4;--panel:#fff;--tray:#dfe3ea;--ink:#1d2330;--mut:#5b6475;--acc:#2f6fed;--board:#cfd6e2;--line:#c3cad6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--panel:#1c212c;--tray:#232937;--ink:#e8ebf2;--mut:#9aa3b5;--acc:#6f9bff;--board:#2b3242;--line:#394258}}
+:root[data-theme="dark"]{--bg:#12151c;--panel:#1c212c;--tray:#232937;--ink:#e8ebf2;--mut:#9aa3b5;--acc:#6f9bff;--board:#2b3242;--line:#394258}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+#app{height:100%;display:grid;grid-template-rows:auto 1fr auto}
+#cr{display:none;padding:4px 10px;font-size:12px;color:var(--mut);background:var(--panel);border-top:1px solid var(--line)}
+#cr a{color:var(--acc)}
+header{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding:8px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+header b{font-size:16px;margin-right:4px}
+header .sp{flex:1}
+select,button{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+button:hover,select:hover{border-color:var(--acc)}
+button.p{background:var(--acc);border-color:var(--acc);color:#fff}
+#st{color:var(--mut);font-variant-numeric:tabular-nums}
+main{display:grid;grid-template-columns:108px 1fr 108px;min-height:0}
+.tray{background:var(--tray);overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;min-height:0}
+.pc{flex:none;cursor:grab;touch-action:none}
+.pc.l{filter:drop-shadow(0 2px 4px rgba(0,0,0,.45))}
+.pc.z{animation:pop .25s}
+@keyframes pop{50%{filter:brightness(1.5)}}
+#vp{position:relative;overflow:hidden;background:var(--board);touch-action:none;cursor:grab;min-height:0}
+#world{position:absolute;left:0;top:0;transform-origin:0 0}
+#frame{position:absolute;left:0;top:0;width:1200px;height:900px;background:rgba(255,255,255,.08);outline:3px solid var(--line);box-shadow:0 0 0 2000px rgba(0,0,0,.04)}
+#ghost{position:absolute;left:0;top:0;width:100%;height:100%;opacity:.18;pointer-events:none}
+.ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:5000;flex-direction:column;gap:12px;color:#fff;text-align:center}
+.ov img{max-width:92%;max-height:80%;border-radius:8px}
+.ov.on{display:flex}
+.ov .box{background:var(--panel);color:var(--ink);padding:24px 32px;border-radius:14px}
+.ov h2{margin:0 0 6px}
+#gal{position:fixed;background:rgba(0,0,0,.6)}
+.gbox{background:var(--panel);color:var(--ink);width:min(900px,96vw);max-height:92vh;display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:14px;text-align:left}
+.gbox h2{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center}
+#chips,#sbar{display:flex;flex-wrap:wrap;gap:6px}
+#gq{flex:1;min-width:140px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;overflow-y:auto;min-height:120px}
+#grid button{padding:0;border-radius:8px;overflow:hidden;aspect-ratio:4/3;background:var(--tray)}
+#grid img{width:100%;height:100%;object-fit:cover;display:block}
+#gmsg,.gnote{color:var(--mut);font-size:12px}
+@media (max-width:700px){main{grid-template-columns:1fr;grid-template-rows:84px 1fr 84px}.tray{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:4px 8px}}
+</style></head><body>
+<div id="app">
+<header>
+<b>🧩 Rompecabezas</b>
+<select id="img"><option value="sunset">Atardecer</option><option value="night">Noche estrellada</option><option value="shapes">Círculos</option><option value="flowers">Jardín</option></select>
+<select id="np"><option value="12">12 piezas · Fácil</option><option value="48" selected>48 piezas · Medio</option><option value="108">108 piezas · Difícil</option><option value="192">192 piezas · Muy difícil</option><option value="300">300 piezas · Experto</option></select>
+<button id="gb" class="p">Galería web</button><button id="up">Subir imagen</button><input type="file" id="file" accept="image/*" hidden>
+<button id="nw" class="p">Nuevo juego</button>
+<span class="sp"></span>
+<button id="zo" title="Alejar">−</button><button id="zi" title="Acercar">+</button><button id="zf">Ajustar</button>
+<button id="pv">Vista previa</button><button id="gh">Guía</button>
+<button id="sh">Mezclar</button><button id="ed">Bordes primero</button>
+<span id="st"></span>
+</header>
+<main>
+<div class="tray" id="tL"></div>
+<div id="vp"><div id="world"><div id="frame"><canvas id="ghost" width="1200" height="900"></canvas></div></div>
+<div class="ov" id="prev"><img id="pimg" alt="Vista previa"><span>Toca para cerrar</span></div>
+<div class="ov" id="win"><div class="box"><h2>¡Completado! 🎉</h2><p id="wt"></p><button class="p" id="again">Jugar de nuevo</button></div></div>
+</div>
+<div class="tray" id="tR"></div>
+</main><div id="cr"></div></div>
+<div class="ov" id="gal"><div class="gbox">
+<h2>Galerías temáticas <button id="gx">Cerrar</button></h2>
+<div id="chips"></div>
+<div id="sbar"><input id="gq" placeholder="Buscar otro tema (mejor en inglés)…"><button id="gs" class="p">Buscar</button></div>
+<div id="gmsg">Elige un tema para ver imágenes.</div>
+<div id="grid"></div>
+<button id="gmore" style="display:none">Más resultados</button>
+<div class="gnote">Imágenes con licencia CC0 o de dominio público, obtenidas de Openverse.</div>
+</div></div>
+<script>
+const BW=1200,BH=900,$=s=>document.querySelector(s);
+const DIFF={12:[4,3],48:[8,6],108:[12,9],192:[16,12],300:[20,15]};
+const vp=$('#vp'),world=$('#world'),trays=[$('#tL'),$('#tR')];
+let G=null,view={x:0,y:0,z:1},zTop=10,timer=null,custom=null,ghostOn=true;
+
+/* ---------- Imágenes ---------- */
+function art(k){
+  const c=document.createElement('canvas');c.width=BW;c.height=BH;const x=c.getContext('2d');
+  let s=11;const R=()=>(s=s*16807%2147483647)/2147483647;
+  const grad=st=>{const g=x.createLinearGradient(0,0,0,BH);st.forEach((t,i)=>g.addColorStop(i/(st.length-1),t));x.fillStyle=g;x.fillRect(0,0,BW,BH)};
+  const hills=(y,a,col,f)=>{x.fillStyle=col;x.beginPath();x.moveTo(0,BH);for(let i=0;i<=BW;i+=10)x.lineTo(i,y+Math.sin(i*f+y)*a+Math.sin(i*f*2.7+y*2)*a*.4);x.lineTo(BW,BH);x.fill()};
+  if(k==='sunset'){grad(['#2b1055','#7b2d8e','#ff6a3d','#ffd27a']);
+    const g=x.createRadialGradient(600,560,10,600,560,380);g.addColorStop(0,'rgba(255,240,190,.9)');g.addColorStop(1,'rgba(255,200,100,0)');x.fillStyle=g;x.fillRect(0,0,BW,BH);
+    x.fillStyle='#fff3c4';x.beginPath();x.arc(600,560,120,0,7);x.fill();
+    hills(600,40,'#5a2a6e',.006);hills(680,50,'#3a1d57',.008);hills(760,40,'#1f1038',.01);hills(840,25,'#0d0820',.014);
+  }else if(k==='night'){grad(['#050a24','#1b2a6b','#3b5ba8']);
+    for(let i=0;i<500;i++){x.fillStyle=`rgba(255,255,255,${.3+R()*.7})`;x.beginPath();x.arc(R()*BW,R()*BH*.8,R()*2.2+.3,0,7);x.fill()}
+    x.shadowColor='#fff';x.shadowBlur=60;x.fillStyle='#fdf6d8';x.beginPath();x.arc(900,200,80,0,7);x.fill();x.shadowBlur=0;
+    x.fillStyle='#1b2a6b';x.beginPath();x.arc(930,185,70,0,7);x.fill();
+    hills(620,60,'#16355a',.005);hills(720,50,'#0f2a40',.007);hills(820,40,'#071a26',.01);
+  }else if(k==='shapes'){x.fillStyle='#f6efe3';x.fillRect(0,0,BW,BH);
+    for(let i=0;i<150;i++){x.globalAlpha=.85;x.fillStyle=`hsl(${R()*360},70%,${45+R()*20}%)`;x.beginPath();x.arc(R()*BW,R()*BH,20+R()*100,0,7);x.fill()}
+    x.globalAlpha=1;x.lineWidth=6;for(let i=0;i<40;i++){x.strokeStyle=`hsl(${R()*360},60%,30%)`;x.beginPath();x.arc(R()*BW,R()*BH,10+R()*60,0,7);x.stroke()}
+  }else{grad(['#8ed1fc','#e9f7ff','#e9f7ff']);
+    hills(480,30,'#7fcf6a',.006);hills(560,30,'#5bb552',.008);hills(660,30,'#3f9a47',.01);
+    const fl=[];for(let i=0;i<130;i++)fl.push([R()*BW,520+R()*400,12+R()*30,R()*360]);
+    fl.sort((a,b)=>a[1]-b[1]).forEach(([fx,fy,r,h])=>{x.strokeStyle='#2c7a35';x.lineWidth=3;x.beginPath();x.moveTo(fx,fy);x.lineTo(fx,fy+r*2);x.stroke();
+      x.fillStyle=`hsl(${h},80%,62%)`;for(let p=0;p<6;p++){x.beginPath();x.ellipse(fx+Math.cos(p*1.047)*r*.8,fy+Math.sin(p*1.047)*r*.8,r*.6,r*.45,p*1.047,0,7);x.fill()}
+      x.fillStyle='#ffd23f';x.beginPath();x.arc(fx,fy,r*.4,0,7);x.fill()});
+  }
+  return c;
+}
+function fromImage(im){const c=document.createElement('canvas');c.width=BW;c.height=BH;const x=c.getContext('2d');
+  const k=Math.max(BW/im.width,BH/im.height),w=im.width*k,h=im.height*k;x.drawImage(im,(BW-w)/2,(BH-h)/2,w,h);return c}
+
+/* ---------- Geometría de piezas ---------- */
+function edge(ctx,x0,y0,x1,y1,s){
+  if(!s){ctx.lineTo(x1,y1);return}
+  const dx=x1-x0,dy=y1-y0,nx=dy,ny=-dx;
+  const P=(a,b)=>[x0+dx*a+nx*b*s,y0+dy*a+ny*b*s];
+  const bc=(a,b,c,d,e,f)=>ctx.bezierCurveTo(...P(a,b),...P(c,d),...P(e,f));
+  ctx.lineTo(...P(.38,0));
+  bc(.42,.01,.43,.05,.40,.08);bc(.36,.12,.38,.22,.5,.22);
+  bc(.62,.22,.64,.12,.60,.08);bc(.57,.05,.58,.01,.62,0);
+  ctx.lineTo(x1,y1);
+}
+
+/* ---------- Juego ---------- */
+function newGame(){
+  clearInterval(timer);$('#win').classList.remove('on');
+  world.querySelectorAll('.pc').forEach(e=>e.remove());trays.forEach(t=>t.innerHTML='');
+  const k=$('#img').value,src=k==='custom'?custom:k==='web'?webC:art(k);showCredit(k==='web'?credit:null);
+  const [cols,rows]=DIFF[$('#np').value],cw=BW/cols,ch=BH/rows,m=Math.ceil(.26*Math.max(cw,ch));
+  $('#ghost').getContext('2d').drawImage(src,0,0);$('#ghost').style.display=ghostOn?'':'none';
+  $('#pimg').src=src.toDataURL('image/jpeg',.8);
+  const rs=()=>Math.random()<.5?1:-1;
+  const h=[...Array(rows+1)].map((_,r)=>[...Array(cols)].map(()=>r&&r<rows?rs():0));
+  const v=[...Array(rows)].map(()=>[...Array(cols+1)].map((_,c)=>c&&c<cols?rs():0));
+  const ts=(innerWidth<700?64:80)/(Math.max(cw,ch)+2*m);
+  G={cols,rows,cw,ch,m,N:cols*rows,placed:0,t0:Date.now(),pieces:[],ts,snap:Math.max(.3*Math.min(cw,ch),10)};
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const cv=document.createElement('canvas');cv.width=cw+2*m;cv.height=ch+2*m;cv.className='pc';
+    const x=cv.getContext('2d'),X=m+cw,Y=m+ch;
+    x.beginPath();x.moveTo(m,m);
+    edge(x,m,m,X,m,-h[r][c]);edge(x,X,m,X,Y,v[r][c+1]);edge(x,X,Y,m,Y,h[r+1][c]);edge(x,m,Y,m,m,-v[r][c]);
+    x.closePath();x.save();x.clip();x.drawImage(src,m-c*cw,m-r*ch);x.restore();
+    x.lineWidth=1.5;x.strokeStyle='rgba(0,0,0,.4)';x.stroke();
+    const p={r,c,el:cv,w:cv.width,h:cv.height,loc:'t',placed:false,edge:!r||!c||r===rows-1||c===cols-1};
+    cv.addEventListener('pointerdown',e=>pdown(e,p));G.pieces.push(p);
+  }
+  reorder('mix');fit();tick();timer=setInterval(tick,500);
+}
+function tick(){if(!G)return;const t=Math.floor((Date.now()-G.t0)/1000);
+  $('#st').textContent=`⏱ ${String(t/60|0).padStart(2,'0')}:${String(t%60).padStart(2,'0')} · ${G.placed}/${G.N}`}
+function toTray(p,tray){const e=p.el;e.className='pc';e.style.cssText=`width:${p.w*G.ts}px;height:${p.h*G.ts}px`;tray.appendChild(e);p.loc='t'}
+function toWorld(p,x,y){const e=p.el;e.style.cssText=`position:absolute;left:${x}px;top:${y}px;width:${p.w}px;height:${p.h}px`;world.appendChild(e)}
+function reorder(mode){
+  const l=G.pieces.filter(p=>p.loc==='t').sort(()=>Math.random()-.5);
+  if(mode==='edge')l.sort((a,b)=>b.edge-a.edge);
+  l.forEach((p,i)=>toTray(p,trays[i%2]));
+}
+function place(p){
+  toWorld(p,p.c*G.cw-G.m,p.r*G.ch-G.m);p.el.style.zIndex=1;p.el.style.pointerEvents='none';
+  p.el.className='pc z';p.placed=true;p.loc='p';G.placed++;tick();
+  if(G.placed===G.N){clearInterval(timer);const t=Math.floor((Date.now()-G.t0)/1000);
+    $('#wt').textContent=`Tiempo: ${t/60|0} min ${t%60} s`;setTimeout(()=>$('#win').classList.add('on'),400)}
+}
+function pdown(e,p){
+  if(p.placed||e.button>0)return;e.preventDefault();e.stopPropagation();
+  const rc=p.el.getBoundingClientRect(),fx=(e.clientX-rc.left)/rc.width,fy=(e.clientY-rc.top)/rc.height;
+  const W=p.w*view.z,H=p.h*view.z,el=p.el;
+  el.className='pc l';el.style.cssText=`position:fixed;width:${W}px;height:${H}px;z-index:9000;pointer-events:none`;
+  document.body.appendChild(el);
+  const mv=ev=>{el.style.left=ev.clientX-fx*W+'px';el.style.top=ev.clientY-fy*H+'px'};
+  const up=ev=>{
+    removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);
+    const vr=vp.getBoundingClientRect(),inV=ev.clientX>vr.left&&ev.clientX<vr.right&&ev.clientY>vr.top&&ev.clientY<vr.bottom;
+    if(inV){
+      const wx=(ev.clientX-fx*W-vr.left-view.x)/view.z,wy=(ev.clientY-fy*H-vr.top-view.y)/view.z;
+      if(Math.hypot(wx-(p.c*G.cw-G.m),wy-(p.r*G.ch-G.m))<G.snap)place(p);
+      else{toWorld(p,wx,wy);el.className='pc l';el.style.zIndex=++zTop;p.loc='w'}
+    }else{
+      let best=0,bd=1e9;trays.forEach((t,i)=>{const r=t.getBoundingClientRect(),d=Math.hypot(ev.clientX-(r.left+r.right)/2,ev.clientY-(r.top+r.bottom)/2);if(d<bd){bd=d;best=i}});
+      toTray(p,trays[best]);
+    }
+  };
+  addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up);mv(e);
+}
+
+/* ---------- Zoom y desplazamiento ---------- */
+const apply=()=>world.style.transform=`translate(${view.x}px,${view.y}px) scale(${view.z})`;
+function fit(){const r=vp.getBoundingClientRect(),z=Math.min(r.width/BW,r.height/BH)*.92;view={z,x:(r.width-BW*z)/2,y:(r.height-BH*z)/2};apply()}
+function zoomAt(f,cx,cy){const nz=Math.min(4,Math.max(.1,view.z*f)),k=nz/view.z;view.x=cx-(cx-view.x)*k;view.y=cy-(cy-view.y)*k;view.z=nz;apply()}
+const zc=f=>{const r=vp.getBoundingClientRect();zoomAt(f,r.width/2,r.height/2)};
+vp.addEventListener('wheel',e=>{e.preventDefault();const r=vp.getBoundingClientRect();zoomAt(e.deltaY<0?1.12:1/1.12,e.clientX-r.left,e.clientY-r.top)},{passive:false});
+const ptrs=new Map();
+vp.addEventListener('pointerdown',e=>{ptrs.set(e.pointerId,[e.clientX,e.clientY]);vp.setPointerCapture(e.pointerId);vp.style.cursor='grabbing'});
+vp.addEventListener('pointermove',e=>{
+  const o=ptrs.get(e.pointerId);if(!o)return;const n=[e.clientX,e.clientY];
+  if(ptrs.size===1){view.x+=n[0]-o[0];view.y+=n[1]-o[1];apply()}
+  else if(ptrs.size===2){const q=[...ptrs.entries()].find(([k])=>k!==e.pointerId)[1],r=vp.getBoundingClientRect();
+    zoomAt(Math.hypot(n[0]-q[0],n[1]-q[1])/Math.hypot(o[0]-q[0],o[1]-q[1]),(n[0]+q[0])/2-r.left,(n[1]+q[1])/2-r.top)}
+  ptrs.set(e.pointerId,n)});
+['pointerup','pointercancel'].forEach(t=>vp.addEventListener(t,e=>{ptrs.delete(e.pointerId);vp.style.cursor='grab'}));
+
+/* ---------- Controles ---------- */
+$('#zi').onclick=()=>zc(1.25);$('#zo').onclick=()=>zc(.8);$('#zf').onclick=fit;
+$('#sh').onclick=()=>G&&reorder('mix');$('#ed').onclick=()=>G&&reorder('edge');
+$('#gh').onclick=()=>{ghostOn=!ghostOn;$('#ghost').style.display=ghostOn?'':'none'};
+$('#pv').onclick=()=>$('#prev').classList.add('on');$('#prev').onclick=()=>$('#prev').classList.remove('on');
+$('#nw').onclick=newGame;$('#again').onclick=newGame;$('#img').onchange=newGame;$('#np').onchange=newGame;
+$('#up').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const fr=new FileReader();
+  fr.onload=()=>{const im=new Image();im.onload=()=>{custom=fromImage(im);
+    if(![...$('#img').options].some(o=>o.value==='custom'))$('#img').add(new Option('Mi imagen','custom'));
+    $('#img').value='custom';newGame()};im.src=fr.result};fr.readAsDataURL(f);e.target.value=''};
+addEventListener('resize',()=>{if(G&&G.placed===0)fit()});
+
+/* ---------- Galería Openverse ---------- */
+const THEMES=[['Naturaleza','nature landscape',''],['Animales','animal wildlife',''],['Arte','painting','digitized_artwork'],['Espacio','nebula galaxy space',''],['Ciudades','city skyline',''],['Flores','flowers',''],['Mar','ocean beach',''],['Comida','food dish','']];
+let webC=null,credit=null,gp=1,gQ='',gC='';
+const gal=$('#gal'),grid=$('#grid'),gmsg=$('#gmsg'),gmore=$('#gmore');
+THEMES.forEach(([n,q,c])=>{const b=document.createElement('button');b.textContent=n;b.onclick=()=>{$('#gq').value='';gsearch(q,c)};$('#chips').appendChild(b)});
+$('#gb').onclick=()=>{gal.classList.add('on');if(!grid.children.length)gsearch(THEMES[0][1],THEMES[0][2])};
+$('#gx').onclick=()=>gal.classList.remove('on');
+gal.onclick=e=>{if(e.target===gal)gal.classList.remove('on')};
+$('#gs').onclick=()=>{const q=$('#gq').value.trim();if(q)gsearch(q,'')};
+$('#gq').onkeydown=e=>{if(e.key==='Enter')$('#gs').click()};
+gmore.onclick=()=>gsearch(gQ,gC,true);
+async function gsearch(q,c,more){
+  if(!more){gp=1;grid.innerHTML='';gQ=q;gC=c}
+  gmsg.textContent='Buscando…';gmore.style.display='none';
+  const prm={q,license:'cc0,pdm',aspect_ratio:'wide',page_size:20,page:gp};if(c)prm.category=c;
+  try{
+    const r=await fetch('https://api.openverse.org/v1/images/?'+new URLSearchParams(prm));
+    if(r.status===429)throw new Error('Se alcanzó el límite de consultas de Openverse. Espera un rato e inténtalo de nuevo.');
+    if(!r.ok)throw new Error('Openverse no respondió ('+r.status+').');
+    const d=await r.json();
+    d.results.forEach(it=>{const b=document.createElement('button'),im=document.createElement('img');
+      im.src=it.thumbnail;im.loading='lazy';im.alt=it.title||'Imagen';b.title=it.title||'';b.appendChild(im);b.onclick=()=>pick(it);grid.appendChild(b)});
+    gmsg.textContent=grid.children.length?'Toca una imagen para jugar con ella.':'Sin resultados. Prueba con otra búsqueda.';
+    if(d.results.length===20){gp++;gmore.style.display=''}
+  }catch(e){gmsg.textContent=e.message&&e.message.length>3?e.message:'No se pudo conectar con Openverse. Revisa tu conexión.'}
+}
+function tryLoad(u){return new Promise((ok,no)=>{const im=new Image();im.crossOrigin='anonymous';
+  im.onload=()=>{try{const c=document.createElement('canvas');c.width=c.height=1;const x=c.getContext('2d');x.drawImage(im,0,0);x.getImageData(0,0,1,1);ok(im)}catch(e){no(e)}};
+  im.onerror=no;im.src=u})}
+async function pick(it){
+  gmsg.textContent='Cargando imagen…';
+  const urls=['https://api.openverse.org/v1/images/'+it.id+'/thumb/?full_size=true',it.thumbnail];
+  for(const u of urls){
+    try{const im=await tryLoad(u);webC=fromImage(im);credit=it;
+      if(![...$('#img').options].some(o=>o.value==='web'))$('#img').add(new Option('Galería web','web'));
+      $('#img').value='web';gal.classList.remove('on');newGame();return}catch(e){}
+  }
+  gmsg.textContent='No se pudo cargar esa imagen. Prueba con otra.';
+}
+function showCredit(c){
+  const e=$('#cr');e.replaceChildren();if(!c){e.style.display='none';return}
+  e.style.display='block';
+  const a=document.createElement('a');a.href=c.foreign_landing_url||c.url;a.target='_blank';a.rel='noopener';a.textContent=c.title||'Sin título';
+  e.append('Imagen: ',a,' · '+(c.creator||'autor desconocido')+' · '+(c.license||'').toUpperCase()+(c.license_version&&c.license_version!=='1.0'?' '+c.license_version:'')+' · vía Openverse');
+}
+newGame();
+</script></body></html>
