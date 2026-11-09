@@ -1,70 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Principal</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #2c3742;
-        }
-        .card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            text-align: center;
-            max-width: 450px;
-            width: 100%;
-        }
-        h1 {
-            color: #2980b9;
-            margin-bottom: 1.5rem;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        li {
-            margin: 1rem 0;
-        }
-        a {
-            display: block;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            padding: 0.8rem 1.2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.3s ease;
-        }
-        a:hover {
-            background-color: #2980b9;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tecnologías en Educación: algunos recursos y experimentos</title>
+<meta name="description" content="Tecnologías en Educación: algunos recursos y experimentos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div class="card">
-        <h1>Navegación</h1>
-        <ul>
-            <li><a href="tardigrados.html">Tardígrados</a></li>
-            <li><a href="proyectos.html">Proyectos</a></li>
-            <li><a href="rompecabezas.html">Rompecabezas</a></li>
-        </ul>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html"><strong>Dr. Pedro Willging</strong><span>Tecnologías en Educación</span></a>
+    <nav aria-label="Principal">
+      <ul>
+        <li><a href="index.html" aria-current="page">Inicio</a></li>
+        <li><a href="proyectos.html">Proyectos</a></li>
+        <li><a href="acerca.html">Acerca de</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
+  <section class="hero cover-hero">
+    <div class="wrap">
+      <img class="art" src="portada.svg" alt="Arte abstracto: círculos concéntricos y trazados de circuito" width="1600" height="640">
+      <h1>Tecnologías en Educación: algunos recursos y experimentos</h1>
+      <p class="lead">Proyectos, documentales y juegos interactivos para explorar cómo la tecnología puede enriquecer la enseñanza y el aprendizaje.</p>
     </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-title"><h2>Explorar</h2></div>
+      <ul class="rows">
+        <li><a href="proyectos.html"><span class="n">01</span><div><h3>Proyectos</h3><p>Iniciativas y recursos educativos.</p></div><span class="arrow">→</span></a></li>
+        <li><a href="tardigrados.html" target="_blank" rel="noopener"><span class="n">02</span><div><h3>Tardígrados: los superhéroes</h3><p>Documental sobre los microanimales más resistentes del planeta.</p></div><span class="arrow">↗</span></a></li>
+        <li><a href="rompecabezas.html" target="_blank" rel="noopener"><span class="n">03</span><div><h3>Rompecabezas interactivo</h3><p>Un juego para armar con imágenes propias o de una galería libre.</p></div><span class="arrow">↗</span></a></li>
+      </ul>
+    </div>
+  </section>
+</main>
 <footer>
-        <p>Pedro A. Willging | Profesor Titular Informatica Educativa </p>
-        <p>2026 - Facultad de Ciencias Exactas y Naturales - UNLPam</p>
+  <div class="wrap">
+    <p>Tecnologías en Educación · Recursos y experimentos</p>
+    <p>2026 · Facultad de Ciencias Exactas y Naturales · UNLPam</p>
+  </div>
 </footer>
-</body>
-</html>
+</body></html>
