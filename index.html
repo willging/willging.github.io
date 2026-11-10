@@ -24,14 +24,14 @@
   </div>
 </header>
 <main>
-  <section class="hero cover-hero">
+ <section class="hero cover-hero">
     <div class="wrap">
-      <img src="portada-animada.svg" alt="Arte abstracto" class="portada">
-      
-      <h1>Tecnologías en Educación: algunos recursos y experimentos</h1>
-      <p class="lead">Proyectos y recursos interactivos para explorar cómo la tecnología puede enriquecer la enseñanza y el aprendizaje.</p>
+        <!-- Agregamos un id para poder seleccionarla desde JavaScript -->
+        <img id="portada-img" src="portada-animada.svg" alt="Arte abstracto" class="portada">
+        <h1>Tecnologías en Educación: algunos recursos y experimentos</h1>
+        <p class="lead">Proyectos y recursos interactivos para explorar cómo la tecnología puede enriquecer la enseñanza y el aprendizaje.</p>
     </div>
-  </section>
+</section>
 
   <section class="section">
     <div class="wrap">
@@ -50,4 +50,26 @@
     <p>2026 · Facultad de Ciencias Exactas y Naturales · UNLPam</p>
   </div>
 </footer>
+ 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Lista con las opciones de portadas disponibles en tu repositorio
+        const portadas = [
+            "portada-animada.svg",
+            "portada-2-flujo.svg",
+            "portada-3-geometria.svg",
+            "portada-4-constelacion.svg"
+        ];
+        
+        // Selecciona un índice aleatorio del arreglo
+        const randomIndex = Math.floor(Math.random() * portadas.length);
+        
+        // Asigna la portada seleccionada a la imagen de la portada
+        const imgElement = document.getElementById("portada-img");
+        if (imgElement) {
+            imgElement.src = portadas[randomIndex];
+        }
+    });
+</script>
+  
 </body></html>
