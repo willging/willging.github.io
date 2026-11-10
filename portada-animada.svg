@@ -1,0 +1,334 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 612" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="t d" xmlns:c2pa="http://c2pa.org/manifest">
+  <title id="t">Portada: árbol de circuitos y naturaleza</title>
+  <desc id="d">Ilustración abstracta de un árbol cuyas ramas son circuitos, rodeado de hojas, engranajes y formas orgánicas, con puntos de luz que laten suavemente.</desc>
+
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#F3D58A" stop-opacity=".95"/>
+      <stop offset=".45" stop-color="#F3D58A" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#F3D58A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowGreen" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#9BBFA4" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#9BBFA4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowWhite" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset=".5" stop-color="#FFFFFF" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Caminos por los que viaja la "información" -->
+    <path id="trunk"  d="M432 612 C470 575 512 545 512 480 L512 160"/>
+    <path id="bL1"    d="M512 300 C505 250 485 230 481 176"/>
+    <path id="bL2"    d="M512 330 C490 290 450 270 418 250"/>
+    <path id="bR1"    d="M512 300 C540 250 570 235 616 222"/>
+    <path id="bR2"    d="M512 340 C540 300 580 280 628 272"/>
+    <path id="cL1"    d="M0 305 H105 C140 305 150 320 175 335 L250 392"/>
+    <path id="cL2"    d="M0 425 H190 C220 425 232 445 232 480 C232 510 250 532 290 532 H436"/>
+    <path id="cR1"    d="M533 510 H672 C710 510 725 495 745 470 L840 365 C870 335 890 295 935 273 H1024"/>
+    <path id="cR2"    d="M533 520 H680 C725 520 745 500 770 470 L860 380 C885 350 905 320 945 300 H1024"/>
+  </defs>
+
+  <style>
+    .ink    { fill:none; stroke:#3E4A55; stroke-width:1; stroke-linecap:round; stroke-linejoin:round; opacity:.8 }
+    .node   { fill:#F6F2E6; stroke:#3E4A55; stroke-width:1; opacity:.9 }
+    .gear-t { fill:none }
+
+    .fx { transform-box:fill-box; transform-origin:center }
+
+    /* Latido muy lento de nodos y luces */
+    .beat   { animation: beat 9s ease-in-out infinite }
+    .beat-s { animation: beat 13s ease-in-out infinite }
+    @keyframes beat {
+      0%,100% { opacity:.30; transform:scale(.85) }
+      50%     { opacity:1;   transform:scale(1.25) }
+    }
+    .ring   { animation: ring 11s ease-in-out infinite }
+    @keyframes ring {
+      0%,100% { opacity:.0; transform:scale(.8) }
+      50%     { opacity:.55; transform:scale(1.5) }
+    }
+
+    /* Partículas y hojitas a la deriva */
+    .f1 { animation: f1 28s ease-in-out infinite }
+    .f2 { animation: f2 36s ease-in-out infinite }
+    .f3 { animation: f3 44s ease-in-out infinite }
+    @keyframes f1 { 0%,100%{transform:translate(0,0)}  50%{transform:translate(6px,-10px)} }
+    @keyframes f2 { 0%,100%{transform:translate(0,0)}  50%{transform:translate(-9px,7px)} }
+    @keyframes f3 { 0%,100%{transform:translate(0,0)}  50%{transform:translate(10px,12px)} }
+
+    .leaf-a { animation: leafA 34s ease-in-out infinite }
+    .leaf-b { animation: leafB 41s ease-in-out infinite }
+    @keyframes leafA { 0%,100%{transform:translate(0,0) rotate(0)}  50%{transform:translate(9px,-13px) rotate(9deg)} }
+    @keyframes leafB { 0%,100%{transform:translate(0,0) rotate(0)}  50%{transform:translate(-10px,11px) rotate(-8deg)} }
+
+    .twinkle { animation: twinkle 10s ease-in-out infinite }
+    @keyframes twinkle { 0%,100%{opacity:.15} 50%{opacity:.8} }
+
+    /* Las formas grandes respiran apenas */
+    .breathe   { animation: breathe 26s ease-in-out infinite }
+    .breathe-b { animation: breathe 34s ease-in-out infinite reverse }
+    @keyframes breathe { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(4px,-6px) scale(1.015)} }
+
+    /* Engranajes casi inmóviles */
+    .spin   { animation: spin 220s linear infinite }
+    .spin-r { animation: spin 260s linear infinite reverse }
+    @keyframes spin { to { transform: rotate(360deg) } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fx, .flow { animation:none !important }
+      .flow { display:none }
+    }
+  </style>
+
+  <!-- Fondo -->
+  <rect width="1024" height="612" fill="#F6F2E6"/>
+
+  <!-- ===== FORMAS ORGÁNICAS (atrás) ===== -->
+  <g class="fx breathe">
+    <rect x="-24" y="162" width="82" height="102" rx="24" fill="#A8C5DD"/>
+  </g>
+  <g class="fx breathe-b">
+    <path d="M0 492 C8 420 40 352 100 332 C142 322 162 354 132 386 C102 416 62 452 22 492 Z" fill="#A8C5DD"/>
+  </g>
+  <g class="fx breathe">
+    <path d="M0 540 C12 505 40 470 80 450 C104 440 118 456 108 482 C98 510 70 540 40 545 C20 548 8 546 0 540 Z" fill="#EBC97A"/>
+  </g>
+  <g class="fx breathe-b">
+    <rect x="-85" y="-190" width="170" height="380" rx="85" transform="translate(265 510) rotate(38)" fill="#9BBFA4"/>
+  </g>
+  <g class="fx breathe">
+    <path d="M320 612 C328 572 368 550 412 550 C416 580 402 600 396 612 Z" fill="#CF8566"/>
+  </g>
+
+  <!-- Hojas izquierda -->
+  <g class="fx leaf-a">
+    <path d="M60 130 C100 126 114 150 106 176 C80 176 56 160 60 130 Z" fill="#9BBFA4"/>
+  </g>
+  <g class="fx leaf-b">
+    <path d="M107 218 C110 200 150 185 190 187 C192 232 160 285 125 291 C100 286 100 252 107 218 Z" fill="#9BBFA4" opacity=".85"/>
+  </g>
+
+  <!-- Engranaje azul -->
+  <g class="fx spin" style="transform-origin:200px 256px">
+    <circle cx="200" cy="256" r="27" fill="#A8C5DD"/>
+    <circle cx="200" cy="256" r="32" fill="none" stroke="#A8C5DD" stroke-width="10" stroke-dasharray="7.2 7.2"/>
+    <circle cx="200" cy="256" r="11" fill="#F6F2E6"/>
+  </g>
+
+  <!-- Derecha -->
+  <g class="fx breathe">
+    <rect x="920" y="155" width="150" height="92" rx="46" fill="#EBC97A"/>
+  </g>
+  <g class="fx breathe-b">
+    <circle cx="867" cy="248" r="41" fill="#EBC97A"/>
+  </g>
+  <g class="fx breathe">
+    <circle cx="860" cy="139" r="25" fill="#CF8566"/>
+  </g>
+  <g class="fx breathe-b">
+    <path d="M922 350 H1030 V452 C962 462 925 420 922 350 Z" fill="#CF8566"/>
+  </g>
+  <g class="fx breathe">
+    <circle cx="735" cy="426" r="58" fill="none" stroke="#EBC97A" stroke-width="40" stroke-dasharray="300 70" transform="rotate(-70 735 426)"/>
+  </g>
+
+  <!-- Engranaje terracota -->
+  <g class="fx spin-r" style="transform-origin:843px 472px">
+    <circle cx="843" cy="472" r="27" fill="#CF8566"/>
+    <circle cx="843" cy="472" r="32" fill="none" stroke="#CF8566" stroke-width="10" stroke-dasharray="7.2 7.2"/>
+    <circle cx="843" cy="472" r="10" fill="#F6F2E6"/>
+  </g>
+
+  <!-- ===== LÍNEAS (órbitas, circuitos, árbol) ===== -->
+  <!-- Órbitas -->
+  <g transform="rotate(-35 850 145)">
+    <ellipse cx="850" cy="145" rx="108" ry="58" class="ink"/>
+    <ellipse cx="850" cy="145" rx="86" ry="44" class="ink" opacity=".6"/>
+    <path id="orbit" d="M742 145 a108 58 0 1 0 216 0 a108 58 0 1 0 -216 0" fill="none"/>
+    <circle r="13" fill="#A8C5DD">
+      <animateMotion dur="120s" repeatCount="indefinite" rotate="0"><mpath xlink:href="#orbit"/></animateMotion>
+    </circle>
+  </g>
+  <ellipse cx="850" cy="455" rx="82" ry="48" class="ink" transform="rotate(35 850 455)"/>
+
+  <!-- Árbol -->
+  <use xlink:href="#trunk" class="ink"/>
+  <use xlink:href="#bL1" class="ink"/>
+  <use xlink:href="#bL2" class="ink"/>
+  <use xlink:href="#bR1" class="ink"/>
+  <use xlink:href="#bR2" class="ink"/>
+  <path class="ink" d="M512 250 C500 220 497 200 498 185"/>
+  <path class="ink" d="M512 250 C520 220 540 200 545 179"/>
+  <path class="ink" d="M512 380 C490 340 440 320 399 286"/>
+  <path class="ink" d="M512 400 C530 370 560 360 585 357"/>
+  <path class="ink" d="M512 420 C490 405 450 395 420 395 H418"/>
+  <path class="ink" d="M512 470 C532 470 545 460 560 450"/>
+
+  <!-- Hoja central -->
+  <g class="fx leaf-b">
+    <path d="M548 488 C548 450 580 418 626 410 C628 450 600 484 548 488 Z" fill="#9BBFA4"/>
+  </g>
+
+  <!-- Circuitos izquierda -->
+  <use xlink:href="#cL1" class="ink"/>
+  <use xlink:href="#cL2" class="ink"/>
+  <path class="ink" d="M0 445 H175 C205 445 215 460 215 490 C215 525 235 545 270 545 H360"/>
+  <path class="ink" d="M0 458 H160 C192 458 202 472 202 500 C202 540 225 560 262 560 H356"/>
+  <path class="ink" d="M55 175 C55 230 80 270 105 290"/>
+  <path class="ink" d="M92 175 C92 225 102 262 120 300 C132 325 150 340 158 368"/>
+  <path class="ink" d="M152 345 L222 386 V405"/>
+
+  <!-- Circuitos derecha -->
+  <use xlink:href="#cR1" class="ink"/>
+  <use xlink:href="#cR2" class="ink"/>
+  <path class="ink" d="M806 395 C826 372 858 346 900 330 L920 320 H1024"/>
+  <path class="ink" d="M866 388 L938 322 H1024"/>
+  <path class="ink" d="M823 354 L900 290"/>
+
+  <!-- Espiral/brote -->
+  <g class="fx breathe-b">
+    <circle cx="324" cy="452" r="32" class="ink"/>
+    <path class="ink" d="M296 448 C300 470 330 480 348 464 C360 452 352 436 338 438 C327 440 326 452 334 455"/>
+    <path class="ink" d="M345 482 L470 492"/>
+  </g>
+
+  <!-- ===== NODOS ===== -->
+  <g>
+    <circle class="node" cx="514" cy="157" r="5"/>
+    <circle class="node" cx="481" cy="176" r="5"/>
+    <circle class="node" cx="498" cy="184" r="3.5"/>
+    <circle class="node" cx="545" cy="179" r="4"/>
+    <circle class="node" cx="589" cy="200" r="5"/>
+    <circle class="node" cx="418" cy="250" r="5"/>
+    <circle class="node" cx="399" cy="286" r="5"/>
+    <circle class="node" cx="418" cy="318" r="4"/>
+    <circle class="node" cx="616" cy="222" r="5"/>
+    <circle class="node" cx="628" cy="272" r="5"/>
+    <circle class="node" cx="585" cy="357" r="5"/>
+    <circle class="node" cx="158" cy="368" r="5"/>
+    <circle class="node" cx="224" cy="406" r="5"/>
+    <circle class="node" cx="252" cy="390" r="5"/>
+    <circle class="node" cx="437" cy="532" r="5"/>
+    <circle class="node" cx="357" cy="521" r="4"/>
+    <circle class="node" cx="490" cy="542" r="5"/>
+    <circle class="node" cx="545" cy="542" r="5"/>
+    <circle class="node" cx="715" cy="476" r="5"/>
+    <circle class="node" cx="823" cy="354" r="5"/>
+    <circle class="node" cx="809" cy="394" r="5"/>
+    <circle class="node" cx="866" cy="390" r="5"/>
+    <circle class="node" cx="916" cy="320" r="5"/>
+    <circle class="node" cx="940" cy="336" r="4"/>
+    <circle class="node" cx="1000" cy="304" r="4"/>
+  </g>
+
+  <!-- ===== LUCES QUE LATEN ===== -->
+  <!-- Resplandor sobre nodos del árbol -->
+  <g>
+    <circle class="fx beat"   style="animation-delay:0s"   cx="450" cy="210" r="17" fill="url(#glowGreen)"/>
+    <circle class="fx beat-s" style="animation-delay:-3s"  cx="543" cy="247" r="9"  fill="url(#glowGreen)"/>
+    <circle class="fx beat"   style="animation-delay:-5s"  cx="482" cy="274" r="14" fill="url(#glow)"/>
+    <circle class="fx beat-s" style="animation-delay:-7s"  cx="615" cy="220" r="14" fill="url(#glow)"/>
+    <circle class="fx beat"   style="animation-delay:-2s"  cx="418" cy="250" r="14" fill="url(#glow)"/>
+    <circle class="fx beat-s" style="animation-delay:-9s"  cx="614" cy="318" r="14" fill="url(#glowWhite)"/>
+    <circle class="fx beat"   style="animation-delay:-4s"  cx="319" cy="452" r="12" fill="url(#glowWhite)"/>
+    <circle class="fx beat-s" style="animation-delay:-6s"  cx="334" cy="410" r="9"  fill="url(#glowWhite)"/>
+    <circle class="fx beat"   style="animation-delay:-8s"  cx="696" cy="320" r="7"  fill="url(#glowWhite)"/>
+  </g>
+
+  <!-- Núcleos del latido -->
+  <g fill="#7FA08A">
+    <circle class="fx beat"   style="animation-delay:0s"  cx="450" cy="210" r="4.5"/>
+    <circle class="fx beat-s" style="animation-delay:-3s" cx="543" cy="247" r="4"/>
+    <circle class="fx beat"   style="animation-delay:-5s" cx="482" cy="274" r="4.5" fill="#D9B45F"/>
+  </g>
+
+  <!-- Ondas suaves que se expanden desde algunos nodos -->
+  <g fill="none" stroke="#7FA08A" stroke-width=".8">
+    <circle class="fx ring" style="animation-delay:-1s"  cx="450" cy="210" r="10"/>
+    <circle class="fx ring" style="animation-delay:-6s"  cx="823" cy="354" r="8"/>
+    <circle class="fx ring" style="animation-delay:-9s"  cx="158" cy="368" r="8"/>
+    <circle class="fx ring" style="animation-delay:-4s"  cx="514" cy="157" r="8"/>
+  </g>
+
+  <!-- ===== FLUJO DE INFORMACIÓN (puntos que viajan por los circuitos) ===== -->
+  <g class="flow">
+    <circle r="2.6" fill="#F3D58A" opacity="0">
+      <animateMotion dur="26s" repeatCount="indefinite" begin="0s"><mpath xlink:href="#trunk"/></animateMotion>
+      <animate attributeName="opacity" values="0;.95;.95;0" keyTimes="0;.12;.85;1" dur="26s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+    <circle r="2.2" fill="#F3D58A" opacity="0">
+      <animateMotion dur="22s" repeatCount="indefinite" begin="-9s"><mpath xlink:href="#bL2"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.12;.85;1" dur="22s" repeatCount="indefinite" begin="-9s"/>
+    </circle>
+    <circle r="2.2" fill="#F3D58A" opacity="0">
+      <animateMotion dur="24s" repeatCount="indefinite" begin="-14s"><mpath xlink:href="#bR1"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.12;.85;1" dur="24s" repeatCount="indefinite" begin="-14s"/>
+    </circle>
+    <circle r="2" fill="#F3D58A" opacity="0">
+      <animateMotion dur="28s" repeatCount="indefinite" begin="-5s"><mpath xlink:href="#bR2"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.12;.85;1" dur="28s" repeatCount="indefinite" begin="-5s"/>
+    </circle>
+    <circle r="2" fill="#F3D58A" opacity="0">
+      <animateMotion dur="23s" repeatCount="indefinite" begin="-18s"><mpath xlink:href="#bL1"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.12;.85;1" dur="23s" repeatCount="indefinite" begin="-18s"/>
+    </circle>
+    <circle r="2.4" fill="#C9985A" opacity="0">
+      <animateMotion dur="40s" repeatCount="indefinite" begin="0s"><mpath xlink:href="#cL1"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.1;.88;1" dur="40s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.4" fill="#C9985A" opacity="0">
+      <animateMotion dur="46s" repeatCount="indefinite" begin="-20s"><mpath xlink:href="#cL2"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.1;.88;1" dur="46s" repeatCount="indefinite" begin="-20s"/>
+    </circle>
+    <circle r="2.4" fill="#C9985A" opacity="0">
+      <animateMotion dur="44s" repeatCount="indefinite" begin="-8s"><mpath xlink:href="#cR1"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.1;.88;1" dur="44s" repeatCount="indefinite" begin="-8s"/>
+    </circle>
+    <circle r="2.4" fill="#C9985A" opacity="0">
+      <animateMotion dur="50s" repeatCount="indefinite" begin="-30s"><mpath xlink:href="#cR2"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.1;.88;1" dur="50s" repeatCount="indefinite" begin="-30s"/>
+    </circle>
+  </g>
+
+  <!-- ===== PARTÍCULAS FLOTANTES ===== -->
+  <g>
+    <g class="fx f1"><circle cx="231" cy="171" r="3"   fill="#E6D3A6"/></g>
+    <g class="fx f2"><circle cx="316" cy="174" r="4.5" fill="#E3DCC4"/></g>
+    <g class="fx f3"><circle cx="250" cy="221" r="3"   fill="#9BBFA4"/></g>
+    <g class="fx f1"><circle cx="324" cy="268" r="3.5" fill="#E6C98A"/></g>
+    <g class="fx f2"><circle cx="338" cy="232" r="2.2" fill="#C8C4B0"/></g>
+    <g class="fx f3"><circle cx="423" cy="379" r="3.2" fill="#A8C5DD"/></g>
+    <g class="fx f1"><circle cx="244" cy="431" r="5"   fill="#E3DCC4"/></g>
+    <g class="fx f2"><circle cx="180" cy="489" r="8"   fill="#E6D3A6" opacity=".7"/></g>
+    <g class="fx f3"><circle cx="696" cy="320" r="5"   fill="#FFFFFF"/></g>
+    <g class="fx f1"><circle cx="749" cy="265" r="3"   fill="#E6C98A"/></g>
+    <g class="fx f2"><circle cx="801" cy="371" r="2.5" fill="#9BBFA4"/></g>
+    <g class="fx f3"><circle cx="763" cy="440" r="3"   fill="#CF8566" opacity=".7"/></g>
+    <g class="fx f1"><circle cx="656" cy="196" r="2.6" fill="#E6D3A6"/></g>
+    <g class="fx f2"><circle cx="560" cy="130" r="2.4" fill="#E3DCC4"/></g>
+    <g class="fx f3"><circle cx="438" cy="150" r="2.4" fill="#C8C4B0"/></g>
+    <g class="fx f2"><circle cx="605" cy="570" r="3"   fill="#E3DCC4"/></g>
+    <g class="fx f1"><circle cx="980" cy="500" r="3"   fill="#E6D3A6"/></g>
+    <g class="fx f3"><circle cx="40"  cy="95"  r="2.6" fill="#E3DCC4"/></g>
+  </g>
+
+  <!-- Destellos que aparecen y se apagan -->
+  <g fill="#FFFFFF">
+    <circle class="fx twinkle" style="animation-delay:0s"  cx="696" cy="320" r="2"/>
+    <circle class="fx twinkle" style="animation-delay:-3s" cx="372" cy="205" r="1.6" fill="#F3D58A"/>
+    <circle class="fx twinkle" style="animation-delay:-6s" cx="655" cy="355" r="1.8" fill="#F3D58A"/>
+    <circle class="fx twinkle" style="animation-delay:-8s" cx="205" cy="330" r="1.6"/>
+    <circle class="fx twinkle" style="animation-delay:-2s" cx="905" cy="420" r="1.8" fill="#F3D58A"/>
+    <circle class="fx twinkle" style="animation-delay:-5s" cx="470" cy="100" r="1.5"/>
+  </g>
+
+  <!-- Hojitas sueltas -->
+  <g transform="translate(171 106)"><g class="fx leaf-a"><path d="M0 0 C5 -5 13 -5 17 0 C13 6 5 6 0 0 Z" fill="#9BBFA4"/></g></g>
+  <g transform="translate(694 229)"><g class="fx leaf-b"><path d="M0 0 C4 -4 10 -4 14 0 C10 5 4 5 0 0 Z" fill="#9BBFA4"/></g></g>
+  <g transform="translate(769 226)"><g class="fx leaf-a"><path d="M0 0 C3 -4 7 -4 10 0 C7 4 3 4 0 0 Z" fill="#EBC97A"/></g></g>
+  <g transform="translate(280 352)"><g class="fx leaf-b"><path d="M0 0 C3 -3 7 -3 10 0 C7 4 3 4 0 0 Z" fill="#A8C5DD"/></g></g>
+  <g transform="translate(580 140)"><g class="fx leaf-a"><path d="M0 0 C3 -3 8 -3 11 0 C8 4 3 4 0 0 Z" fill="#9BBFA4" opacity=".8"/></g></g>
+  <g transform="translate(930 470)"><g class="fx leaf-b"><path d="M0 0 C4 -4 10 -4 14 0 C10 5 4 5 0 0 Z" fill="#EBC97A" opacity=".9"/></g></g>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo3ZDQ3MTBkMi01N2M0LTQyYjgtYTk0Mi0yZTM1MTNjMjQzOGYAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaLI3uS0emHFH3H67Gq9oM1kAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDoyZWJhNDFhNi1kN2FmLTQ3NDUtODkxOS0xZWU1NDhmNGFiMmNscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoqDog847ljEUBMpuYOoBStQAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggLY+vDz6iBydb2T6bS5J7oSCBXgApm+7HIjv+XlSYLr6kZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaPKlUKKtyMK5G0Gn7RQ3ox4AAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYIAfjLNMnmM7zc022ivHdhjJSpfO1MUsaqvzoI/OOg/sgZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GUZeZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjdkNDcxMGQyLTU3YzQtNDJiOC1hOTQyLTJlMzUxM2MyNDM4Zi9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjBlZWY2ZWExLTlkY2ItNGQxZi1iNWI2LWQ0MDE1OGVhYWIxN3JjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCAtj68PPqIHJ1vZPptLknuhIIFeACmb7sciO/5eVJguvqJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggiS+2ixodtewnCJulM7zjZrIOX0ZOqjGV+gJj+4Ryt4iiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgg9nK5NOLaNmgI3e60++VKmf4wU3wVcaIgSRItOX0IkWx0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQEKRylOukFB14I02AS3GWlyau+J9a3wW1eLJQq8kq1qpdyzgfv0Gj52/oFvjbWcbhRDu/V/nygbLklJLa1vE3JM=</c2pa:manifest></metadata></svg>
