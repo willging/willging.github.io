@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" width="100%" height="100%">
+  <defs>
+    <!-- Estilos y animaciones sutiles -->
+    <style>
+      .bg { fill: #fcfbf9; }
+      .line { fill: none; stroke: #2d3748; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .line-secondary { fill: none; stroke: #a0aec0; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+      
+      .shape-blue { fill: #bbf7d0; opacity: 0.6; }
+      .shape-green { fill: #a7f3d0; opacity: 0.7; }
+      .shape-orange { fill: #fed7aa; opacity: 0.8; }
+      .shape-rust { fill: #fdba74; opacity: 0.9; }
+
+      /* Animación de latido sutil en los nodos del circuito */
+      @keyframes pulse-node {
+        0% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.3); opacity: 1; fill: #3182ce; }
+        100% { transform: scale(1); opacity: 0.8; }
+      }
+
+      /* Animación de parpadeo alternado */
+      @keyframes pulse-slow {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
+      }
+
+      /* Flotar suave de elementos decorativos */
+      @keyframes float-slow {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+      }
+
+      .animated-node {
+        animation: pulse-node 4s infinite ease-in-out;
+        transform-origin: center;
+      }
+      
+      .node-delay-1 { animation-delay: 1s; }
+      .node-delay-2 { animation-delay: 2s; }
+      .node-delay-3 { animation-delay: 3s; }
+
+      .floating {
+        animation: float-slow 6s infinite ease-in-out;
+      }
+
+      .blinking {
+        animation: pulse-slow 3s infinite ease-in-out;
+      }
+    </style>
+  </defs>
+
+  <!-- Fondo -->
+  <rect class="bg" width="1600" height="640" />
+
+  <!-- Formas geométricas de fondo minimalistas -->
+  <g class="floating">
+    <path class="shape-blue" d="M 120,120 Q 180,80 220,140 T 140,240 Z" />
+    <circle cx="1320" cy="180" r="45" class="shape-orange" />
+    <rect x="1250" y="260" width="120" height="70" rx="16" class="shape-orange" transform="rotate(-15 1310 295)" />
+    <polygon points="1400,380 1480,360 1450,440" class="shape-rust" />
+  </g>
+
+  <!-- Órbita / Elemento científico superior derecho -->
+  <g transform="translate(1300, 140)" class="floating" style="animation-delay: 2s;">
+    <ellipse cx="0" cy="0" rx="90" ry="30" class="line-secondary" transform="rotate(-25)" />
+    <ellipse cx="0" cy="0" rx="90" ry="30" class="line-secondary" transform="rotate(35)" />
+    <circle cx="45" cy="-20" r="14" fill="#dd6b20" />
+    <circle cx="-50" cy="30" r="8" fill="#3182ce" />
+  </g>
+
+  <!-- Trazados de circuitos y conexiones inferiores/laterales -->
+  <g>
+    <!-- Lado izquierdo -->
+    <path class="line" d="M 0,380 L 180,380 Q 220,380 240,340 L 280,260" />
+    <path class="line-secondary" d="M 80,420 L 220,420 Q 250,420 270,390 L 320,320" />
+    
+    <!-- Lado derecho -->
+    <path class="line" d="M 1600,340 L 1350,340 Q 1320,340 1300,380 L 1250,460" />
+    <path class="line-secondary" d="M 1500,300 L 1380,300 Q 1360,300 1340,330 L 1280,410" />
+  </g>
+
+  <!-- Engranajes minimalistas -->
+  <g transform="translate(260, 240) scale(0.8)" class="floating" style="animation-delay: 1.5s;">
+    <circle cx="0" cy="0" r="28" class="line" />
+    <circle cx="0" cy="0" r="10" fill="none" stroke="#2d3748" stroke-width="2" />
+    <path d="M -5,-35 L 5,-35 L 8,-25 L -8,-25 Z M -35,-5 L -35,5 L -25,8 L -25,-8 Z M 5,35 L -5,35 L -8,25 L 8,25 Z M 35,5 L 35,-5 L 25,-8 L 25,8 Z" fill="#2d3748" />
+  </g>
+
+  <g transform="translate(1320, 440) scale(0.65)" class="floating" style="animation-delay: 3s;">
+    <circle cx="0" cy="0" r="32" class="line" />
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#2d3748" stroke-width="2" />
+  </g>
+
+  <!-- Árbol central / Nodo principal de conocimiento -->
+  <g transform="translate(800, 520)">
+    <!-- Raíces de circuitos -->
+    <path class="line" d="M 0,0 C -20,-40 -120,-60 -180,-120" />
+    <path class="line" d="M 0,0 C 20,-40 100,-50 160,-110" />
+    <path class="line" d="M 0,0 L 0,-140" />
+
+    <!-- Tronco y ramas principales -->
+    <path class="line" stroke-width="3" d="M 0,-140 C 0,-220 -80,-240 -120,-280" />
+    <path class="line" stroke-width="3" d="M 0,-140 C 0,-200 80,-230 130,-290" />
+    <path class="line" stroke-width="3" d="M 0,-180 C -20,-260 -40,-280 -80,-350" />
+    <path class="line" stroke-width="3" d="M 0,-200 C 30,-260 60,-280 90,-340" />
+    <path class="line" stroke-width="3" d="M 0,-250 L 0,-380" />
+
+    <!-- Nodos finales interactivos (con animación de latido sutil) -->
+    <circle cx="-120" cy="-280" r="6" class="line animated-node" fill="#ffffff" />
+    <circle cx="130" cy="-290" r="5" class="line animated-node node-delay-1" fill="#ffffff" />
+    <circle cx="-80" cy="-350" r="6" class="line animated-node node-delay-2" fill="#ffffff" />
+    <circle cx="90" cy="-340" r="5" class="line animated-node node-delay-3" fill="#ffffff" />
+    <circle cx="0" cy="-380" r="7" class="line animated-node" fill="#ffffff" />
+    <circle cx="-180" cy="-120" r="5" class="line blinking" fill="#2d3748" />
+    <circle cx="160" cy="-110" r="5" class="line blinking" fill="#2d3748" />
+  </g>
+
+  <!-- Hojas y detalles orgánicos flotantes -->
+  <g class="floating" style="animation-delay: 1s;">
+    <path d="M 280,180 Q 300,150 320,180 Q 300,210 280,180 Z" class="shape-green" transform="rotate(-30 300 180)" />
+    <path d="M 720,240 Q 735,220 750,240 Q 735,260 720,240 Z" class="shape-green" transform="rotate(45 735 240)" />
+    <path d="M 1050,150 Q 1065,135 1080,150 Q 1065,165 1050,150 Z" class="shape-green" transform="rotate(15 1065 150)" />
+  </g>
+
+  <!-- Pequeños puntos de luz sutilmente intermitentes -->
+  <g class="blinking">
+    <circle cx="450" cy="180" r="3" fill="#3182ce" />
+    <circle cx="1120" cy="380" r="3.5" fill="#dd6b20" />
+    <circle cx="680" cy="120" r="2.5" fill="#38a169" />
+  </g>
+</svg>
