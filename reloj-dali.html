@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relojes Derretidos - Estilo Dalí</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #eee;
+      font-family: Georgia, serif;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      font-weight: normal;
+      letter-spacing: 1px;
+    }
+    #canvas-container {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+  </style>
+  <!-- Cargamos la librería p5.js desde un CDN oficial -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+</head>
+<body>
+
+  <h1>La Persistencia de la Memoria</h1>
+  <div id="canvas-container"></div>
+
+  <script>
+    // Relojes derretidos estilo Dalí — p5.js
+    let PAL;                 // paleta actual (cambia con el mouse)
+    let tDia = 0.46;         // momento del día: 0 amanecer, .25 mediodía, .5 atardecer, .75 noche
+    let MELT = 1;            // cuánto se derrite (lo controla el mouse en Y)
+    let auto = false;        // click: ciclo automático del día
+    let movido = false;      // ¿ya se movió el mouse?
+    const estrellas = [];
+
+    // Paletas clave del día
+    const KEYS = [
+      { cieloTop: [110, 130, 190], cieloBot: [255, 170, 150], monte: [170, 100, 110], roca: [125, 80, 80], rocaSombra: [90, 55, 65],
+        sueloA: [215, 160, 120], sueloB: [125, 80, 60], cara: [245, 230, 190], astro: [255, 230, 200], estrellas: 0, luz: 0.85 }, // amanecer
+      { cieloTop: [70, 150, 230], cieloBot: [190, 225, 250], monte: [150, 110, 85], roca: [130, 90, 65], rocaSombra: [95, 65, 50],
+        sueloA: [225, 185, 110], sueloB: [150, 105, 60], cara: [245, 235, 190], astro: [255, 245, 170], estrellas: 0, luz: 1 },    // mediodía
+      { cieloTop: [90, 140, 190], cieloBot: [250, 190, 120], monte: [150, 90, 70], roca: [105, 62, 48], rocaSombra: [70, 40, 35],
+        sueloA: [200, 150, 90], sueloB: [110, 70, 40], cara: [240, 225, 170], astro: [255, 150, 60], estrellas: 0, luz: 0.9 },    // atardecer
+      { cieloTop: [10, 15, 45], cieloBot: [50, 50, 100], monte: [35, 35, 70], roca: [30, 30, 55], rocaSombra: [18, 18, 38],
+        sueloA: [60, 60, 90], sueloB: [22, 22, 38], cara: [200, 220, 255], astro: [235, 240, 255], estrellas: 1, luz: 0.5 },      // noche
+    ];
+    const GROUND = 560; // altura del suelo donde se acumula el "derretido"
+    const RAMA = [775, 375, 745, 356, 715, 350, 660, 344];
+
+    const nuevoReloj = (cx, cy, R, seed, numeros, suelo) =>
+      ({ cx, cy, R, seed, numeros, suelo, tAnim: 0, hasta: 0, fecha: null, ultMult: 1 });
+    const relojes = [
+      nuevoReloj(100, 480, 60, 7.3, false, GROUND),
+      nuevoReloj(705, 385, 46, 21.9, false, 900),
+      nuevoReloj(450, 270, 170, 0, true, GROUND),
+    ];
+    const hormigasSuelo = [];
+    const hormigasReloj = [];
+    let ojoAbierto = 0;
+
+    function setup() {
+      let canvas = createCanvas(900, 700);
+      canvas.parent('canvas-container');
+      textAlign(CENTER, CENTER);
+      textFont('Georgia');
+      for (let i = 0; i < 70; i++) {
+        estrellas.push({ x: random(width), y: random(380), s: random(1, 2.6), f: random(TWO_PI) });
+      }
+      PAL = paleta(tDia);
+      for (let i = 0; i < 5; i++) hormigasSuelo.push({ i, ox: 0, oy: 0 });
+      for (let i = 0; i < 8; i++) hormigasReloj.push({ ox: 0, oy: 0 });
+    }
+
+    function draw() {
+      if (!movido && (mouseX !== 0 || mouseY !== 0) && mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) movido = true;
+
+      if (auto) tDia = (tDia + 0.0006) % 1;
+      else if (movido) tDia = lerp(tDia, constrain(mouseX / width, 0, 0.999), 0.1);
+      PAL = paleta(tDia);
+
+      const objetivo = movido ? map(mouseY, 0, height, 0.35, 1.7, true) : 1;
+      MELT = lerp(MELT, objetivo, 0.08);
+
+      dibujarFondo();
+      dibujarReloj(relojes[0]);
+      dibujarReloj(relojes[1]);
+      dibujarRama();
+      dibujarDurmiente(215, 660);
+      dibujarReloj(relojes[2]);
+      dibujarRelojDeBolsillo(610, 640);
+      dibujarHormigas();
+      dibujarPista();
+    }
+
+    function mousePressed() {
+      if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height) return;
+      for (let i = relojes.length - 1; i >= 0; i--) {
+        const r = relojes[i];
+        if (relojContiene(r, mouseX, mouseY)) {
+          if (millis() < r.hasta) r.hasta = 0;
+          else { r.fecha = new Date(); r.hasta = millis() + 6000; }
+          return;
+        }
+      }
+      auto = !auto;
+    }
+
+    function relojContiene(r, mx, my) {
+      const pts = [];
+      for (let a = 0; a < TWO_PI; a += TWO_PI / 60) {
+        const p = derretir(cos(a) * r.R, sin(a) * r.R, r.R, r.seed, r.cy, r.suelo, r.ultMult, r.tAnim);
+        pts.push([r.cx + p.x, r.cy + p.y]);
+      }
+      let dentro = false;
+      for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+        const [xi, yi] = pts[i], [xj, yj] = pts[j];
+        if ((yi > my) !== (yj > my) && mx < ((xj - xi) * (my - yi)) / (yj - yi) + xi) dentro = !dentro;
+      }
+      return dentro;
+    }
+
+    function mezclar(a, b, f) {
+      return a.map((v, i) => lerp(v, b[i], f));
+    }
+
+    function paleta(t) {
+      const s4 = (((t % 1) + 1) % 1) * 4;
+      const i = floor(s4);
+      const f0 = s4 - i;
+      const f = f0 * f0 * (3 - 2 * f0);
+      const A = KEYS[i % 4], B = KEYS[(i + 1) % 4];
+      const out = {};
+      for (const k in A) out[k] = typeof A[k] === 'number' ? lerp(A[k], B[k], f) : mezclar(A[k], B[k], f);
+      return out;
+    }
+
+    function dibujarFondo() {
+      noStroke();
+      for (let y = 0; y < 470; y += 2) {
+        fill(...mezclar(PAL.cieloTop, PAL.cieloBot, y / 470));
+        rect(0, y, width, 2);
+      }
+
+      if (PAL.estrellas > 0.02) {
+        for (const e of estrellas) {
+          fill(255, 255, 255, 220 * PAL.estrellas * (0.6 + 0.4 * sin(frameCount * 0.05 + e.f)));
+          ellipse(e.x, e.y, e.s);
+        }
+      }
+
+      dibujarAstro();
+
+      fill(...PAL.monte);
+      beginShape();
+      vertex(0, 470);
+      for (let x = 0; x <= width; x += 10) vertex(x, 420 - 70 * noise(x * 0.006, 3));
+      vertex(width, 470);
+      endShape(CLOSE);
+
+      fill(...PAL.roca);
+      beginShape();
+      vertex(690, 470); vertex(725, 425); vertex(760, 440);
+      vertex(800, 375); vertex(830, 405); vertex(870, 350);
+      vertex(900, 372); vertex(900, 470);
+      endShape(CLOSE);
+      fill(...PAL.rocaSombra, 140);
+      beginShape();
+      vertex(800, 375); vertex(830, 405); vertex(870, 350);
+      vertex(880, 470); vertex(820, 470);
+      endShape(CLOSE);
+
+      for (let y = 470; y < height; y += 2) {
+        fill(...mezclar(PAL.sueloA, PAL.sueloB, (y - 470) / (height - 470)));
+        rect(0, y, width, 2);
+      }
+
+      noFill();
+      stroke(45 * PAL.luz, 28 * PAL.luz, 20 * PAL.luz);
+      strokeCap(ROUND);
+      strokeWeight(14);
+      bz(window, 782, 520, 768, 450, 790, 390, 775, 300);
+      strokeWeight(8);
+      bz(window, 778, 330, 800, 300, 830, 290, 860, 270);
+      strokeWeight(4);
+      bz(window, 800, 305, 810, 280, 800, 262, 815, 245);
+      bz(window, 838, 285, 845, 265, 870, 255, 885, 245);
+      bz(window, 772, 420, 790, 410, 805, 415, 825, 400);
+
+      noStroke();
+      fill(255, 255, 255, 70);
+      textStyle(ITALIC);
+      textSize(13);
+      textAlign(RIGHT, BOTTOM);
+      text('P.A.W.', width - 18, height - 14);
+      textAlign(CENTER, CENTER);
+      textStyle(NORMAL);
+    }
+
+    function dibujarAstro() {
+      const sol = tDia < 0.5;
+      const u = sol ? tDia * 2 : (tDia - 0.5) * 2;
+      const x = lerp(70, 830, u);
+      const y = 410 - sin(u * PI) * 300;
+      noStroke();
+      for (let i = 3; i >= 1; i--) {
+        fill(...PAL.astro, 25);
+        ellipse(x, y, (sol ? 30 : 26) + i * (sol ? 28 : 18));
+      }
+      fill(...PAL.astro);
+      ellipse(x, y, sol ? 34 : 28);
+      if (!sol) {
+        fill(170, 180, 210, 120);
+        ellipse(x - 5, y - 3, 6);
+        ellipse(x + 4, y + 5, 4);
+      }
+    }
+
+    function dibujarPista() {
+      const a = constrain(map(millis(), 9000, 12000, 130, 0), 0, 130);
+      if (a <= 0) return;
+      push();
+      noStroke();
+      fill(PAL.luz > 0.7 ? 0 : 255, a);
+      textAlign(LEFT, TOP);
+      textStyle(NORMAL);
+      textSize(12);
+      text('mouse ←→ hora del día  ·  ↑↓ derretido  ·  click en un reloj: congelar  ·  click afuera: modo automático', 14, 12);
+      pop();
+    }
+
+    function dibujarRama() {
+      noFill();
+      stroke(45 * PAL.luz, 28 * PAL.luz, 20 * PAL.luz);
+      strokeCap(ROUND);
+      strokeWeight(9);
+      bz(window, ...RAMA);
+      strokeWeight(4);
+      bz(window, 700, 349, 685, 335, 672, 332, 655, 322);
+    }
+
+    function derretir(x, y, R, seed, cy, suelo, mult, fc) {
+      const t = constrain((y + R * 0.6) / (R * 1.6), 0, 1);
+      const respiracion = 0.85 + 0.15 * sin(fc * 0.01 + seed);
+      const n = noise((x / R) * 1.8 + seed, fc * 0.004 + seed);
+      const cantidad = R * (0.1 + 1.8 * n * n) * respiracion * mult;
+      const y2 = y + t * t * cantidad;
+      const x2 = x * (1 + 0.2 * t * t * n);
+      return { x: x2, y: min(y2, suelo - cy) };
+    }
+
+    function dibujarReloj(r) {
+      const { cx, cy, R, seed, suelo } = r;
+      const conNumeros = r.numeros;
+      const congelado = millis() < r.hasta;
+
+      let mult = r.ultMult;
+      if (!congelado) {
+        r.tAnim++;
+        const dm = dist(mouseX, mouseY, cx, cy);
+        const cerca = movido ? constrain(map(dm, 0, R * 3, 0.7, 0), 0, 0.7) : 0;
+        mult = r.ultMult = MELT * (1 + cerca);
+      }
+      const w = (px, py) => derretir(px, py, R, seed, cy, suelo, mult, r.tAnim);
+
+      const d = congelado ? r.fecha : new Date();
+      const seg = d.getSeconds() + d.getMilliseconds() / 1000;
+      const min_ = d.getMinutes() + seg / 60;
+      const hor = (d.getHours() % 12) + min_ / 60;
+
+      const aSeg = TWO_PI * (seg / 60) - HALF_PI;
+      const aMin = TWO_PI * (min_ / 60) - HALF_PI;
+      const aHor = TWO_PI * (hor / 12) - HALF_PI;
+
+      if (suelo === GROUND) {
+        noStroke();
+        fill(0, 60);
+        ellipse(cx, GROUND + 6, R * 2.6, R * 0.3);
+      }
+
+      push();
+      translate(cx, cy);
+
+      const anillo = (radio) => {
+        beginShape();
+        for (let a = 0; a < TWO_PI; a += TWO_PI / 120) {
+          const p = w(cos(a) * radio, sin(a) * radio);
+          vertex(p.x, p.y);
+        }
+        endShape(CLOSE);
+      };
+
+      fill(...PAL.cara);
+      stroke(120, 70, 20);
+      strokeWeight(max(2, R * 0.045));
+      strokeJoin(ROUND);
+      anillo(R);
+
+      noFill();
+      stroke(180, 130, 50);
+      strokeWeight(max(1, R * 0.012));
+      anillo(R * 0.9);
+
+      stroke(60, 35, 10);
+      strokeWeight(max(1.5, R * 0.025));
+      for (let i = 0; i < 12; i++) {
+        const a = (TWO_PI * i) / 12 - HALF_PI;
+        noFill();
+        beginShape();
+        for (let k = 0; k <= 6; k++) {
+          const r = lerp(R * 0.78, R * 0.88, k / 6);
+          const p = w(cos(a) * r, sin(a) * r);
+          vertex(p.x, p.y);
+        }
+        endShape();
+      }
+
+      if (conNumeros) {
+        noStroke();
+        fill(60, 35, 10);
+        for (let i = 1; i <= 12; i++) {
+          const a = (TWO_PI * i) / 12 - HALF_PI;
+          const px = cos(a) * R * 0.66;
+          const py = sin(a) * R * 0.66;
+          const p = w(px, py);
+          const estiramiento = constrain((w(px, py + 2).y - p.y) / 2, 0.3, 4);
+          push();
+          translate(p.x, p.y);
+          scale(1, estiramiento);
+          textSize(R * 0.17);
+          text(i, 0, 0);
+          pop();
+        }
+      }
+
+      const aguja = (ang, largo, grosor, col) => {
+        stroke(col);
+        strokeWeight(grosor);
+        noFill();
+        beginShape();
+        for (let k = 0; k <= 10; k++) {
+          const r = (largo * k) / 10;
+          const p = w(cos(ang) * r, sin(ang) * r);
+          vertex(p.x, p.y);
+        }
+        endShape();
+      };
+
+      aguja(aHor, R * 0.5, max(3, R * 0.06), color(40, 20, 5));
+      aguja(aMin, R * 0.75, max(2, R * 0.04), color(40, 20, 5));
+      aguja(aSeg, R * 0.82, max(1, R * 0.015), color(190, 30, 20));
+
+      const c = w(0, 0);
+      noStroke();
+      fill(190, 30, 20);
+      ellipse(c.x, c.y, R * 0.07);
+
+      if (congelado) {
+        const a = constrain((r.hasta - millis()) / 800, 0, 1);
+        fill(190, 230, 255, 110 * a);
+        stroke(235, 250, 255, 230 * a);
+        strokeWeight(max(1.5, R * 0.03));
+        anillo(R);
+        stroke(255, 255, 255, 200 * a);
+        strokeWeight(1);
+        for (let i = 0; i < 6; i++) {
+          const ang = (TWO_PI * i) / 6 + 0.4;
+          const p = w(cos(ang) * R * 0.88, sin(ang) * R * 0.88);
+          const k = max(3, R * 0.05);
+          line(p.x - k, p.y, p.x + k, p.y);
+          line(p.x, p.y - k, p.x, p.y + k);
+        }
+      }
+
+      pop();
+    }
+
+    function dibujarDurmiente(x, base) {
+      const respira = 1 + 0.03 * sin(frameCount * 0.03);
+      const cerca = movido && dist(mouseX, mouseY, x, base - 35) < 170;
+      ojoAbierto = lerp(ojoAbierto, cerca ? 1 : 0, 0.1);
+
+      push();
+      translate(x, base);
+
+      noStroke();
+      fill(0, 55);
+      ellipse(0, 4, 300, 22);
+
+      scale(1, respira);
+      const pts = [
+        [-130, 0], [-110, -18], [-70, -42], [-20, -55], [25, -50],
+        [45, -72], [62, -48], [85, -38], [120, -22], [140, 0],
+      ];
+      fill(226 * PAL.luz, 186 * PAL.luz, 150 * lerp(PAL.luz, 1, 0.3));
+      stroke(110, 70, 50);
+      strokeWeight(1.2);
+      beginShape();
+      for (const p of suavizar(pts)) vertex(p[0], p[1]);
+      endShape();
+      line(-130, 0, 140, 0);
+
+      const ex = -8, ey = -34, hw = 28, N = 16;
+      const ap = ojoAbierto * 20;
+      const inferior = (u) => ey + 10 * sin(u * PI);
+      const superior = (u) => inferior(u) - ap * sin(u * PI);
+
+      if (ap > 1) {
+        noStroke();
+        fill(250, 245, 235);
+        beginShape();
+        for (let i = 0; i <= N; i++) vertex(ex + (i / N - 0.5) * 2 * hw, inferior(i / N));
+        for (let i = N; i >= 0; i--) vertex(ex + (i / N - 0.5) * 2 * hw, superior(i / N));
+        endShape(CLOSE);
+
+        const ix = ex + constrain((mouseX - (x + ex)) / 60, -1, 1) * 9;
+        const iy = ey + constrain((mouseY - (base + ey)) / 60, -1, 1) * 2.5;
+        const alto = min(15, ap * 0.9);
+        fill(70, 110, 140);
+        ellipse(ix, iy, 15, alto);
+        fill(10);
+        ellipse(ix, iy, 7, min(7, alto));
+      }
+
+      noFill();
+      stroke(60, 35, 25);
+      strokeWeight(1.6);
+      for (const f of [inferior, superior]) {
+        beginShape();
+        for (let i = 0; i <= N; i++) vertex(ex + (i / N - 0.5) * 2 * hw, f(i / N));
+        endShape();
+      }
+      strokeWeight(1);
+      for (let i = 0; i < 8; i++) {
+        const u = (i + 0.5) / 8;
+        const px = ex + (u - 0.5) * 2 * hw;
+        const py = superior(u);
+        line(px, py, px + (u - 0.5) * 6, py + lerp(7, -7, ojoAbierto));
+      }
+      pop();
+    }
+
+    function dibujarRelojDeBolsillo(x, y) {
+      push();
+      translate(x, y);
+      noStroke();
+      fill(0, 55);
+      ellipse(0, 12, 46, 8);
+
+      fill(225, 115, 30);
+      stroke(100, 50, 15);
+      strokeWeight(1.5);
+      ellipse(0, 0, 36);
+      rect(-3, -22, 6, 6, 1);
+      noFill();
+      stroke(250, 190, 120, 160);
+      arc(0, 0, 24, 24, PI, PI + 1.6);
+      pop();
+
+      for (let i = 0; i < hormigasReloj.length; i++) {
+        const dir = i % 2 ? 1 : -1;
+        const a = (TWO_PI * i) / hormigasReloj.length + frameCount * 0.006 * dir;
+        moverHormiga(hormigasReloj[i], x + cos(a) * 19, y + sin(a) * 19, a + (dir > 0 ? HALF_PI : -HALF_PI));
+      }
+    }
+
+    function dibujarHormigas() {
+      for (const h of hormigasSuelo) {
+        const bx = 640 + ((frameCount * 0.5 + h.i * 38) % 190);
+        const by = 652 + sin(bx * 0.09 + h.i) * 4;
+        moverHormiga(h, bx, by, 0);
+      }
+    }
+
+    function moverHormiga(h, bx, by, angBase) {
+      const px0 = bx + h.ox, py0 = by + h.oy;
+      const d = dist(mouseX, mouseY, px0, py0);
+      let ang = angBase, vel = 1;
+
+      if (movido && d < 100) {
+        const f = ((100 - d) / 100) * 2.4;
+        const a = atan2(py0 - mouseY, px0 - mouseX);
+        h.ox += cos(a) * f;
+        h.oy += sin(a) * f;
+        ang = a;
+        vel = 3;
+      } else {
+        h.ox *= 0.97;
+        h.oy *= 0.97;
+        if (abs(h.ox) + abs(h.oy) > 3) { ang = atan2(-h.oy, -h.ox); vel = 2.5; }
+      }
+      h.ox = constrain(h.ox, -160, 160);
+
+      const px = constrain(bx + h.ox, 5, width - 5);
+      const py = constrain(by + h.oy, GROUND + 12, height - 8);
+      h.ox = px - bx;
+      h.oy = py - by;
+      dibujarHormiga(px, py, ang, vel);
+    }
+
+    function dibujarHormiga(x, y, ang, vel) {
+      push();
+      translate(x, y);
+      rotate(ang);
+      stroke(15);
+      strokeWeight(0.7);
+      for (let s = -1; s <= 1; s += 2) {
+        for (let k = -1; k <= 1; k++) {
+          const m = sin(frameCount * 0.35 * vel + k * 2 + x) * 1.2;
+          line(k * 2.2, 0, k * 2.2 + m, s * 4.5);
+        }
+      }
+      noStroke();
+      fill(15);
+      ellipse(-4, 0, 4, 3);
+      ellipse(0, 0, 3.5, 3);
+      ellipse(4, 0, 5, 3.6);
+      pop();
+    }
+
+    function bz(ctx, x1, y1, cx1, cy1, cx2, cy2, x2, y2) {
+      ctx.beginShape();
+      for (let i = 0; i <= 24; i++) {
+        const t = i / 24, u = 1 - t;
+        ctx.vertex(
+          u * u * u * x1 + 3 * u * u * t * cx1 + 3 * u * t * t * cx2 + t * t * t * x2,
+          u * u * u * y1 + 3 * u * u * t * cy1 + 3 * u * t * t * cy2 + t * t * t * y2
+        );
+      }
+      ctx.endShape();
+    }
+
+    function suavizar(pts, pasos = 8) {
+      const out = [];
+      const P = [pts[0], ...pts, pts[pts.length - 1]];
+      for (let i = 1; i < P.length - 2; i++) {
+        const [p0, p1, p2, p3] = [P[i - 1], P[i], P[i + 1], P[i + 2]];
+        for (let k = 0; k < pasos; k++) {
+          const t = k / pasos, t2 = t * t, t3 = t2 * t;
+          out.push([0, 1].map(j =>
+            0.5 * (2 * p1[j] + (-p0[j] + p2[j]) * t +
+              (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * t2 +
+              (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * t3)));
+        }
+      }
+      out.push(pts[pts.length - 1]);
+      return out;
+    }
+  </script>
+</body>
+</html>
