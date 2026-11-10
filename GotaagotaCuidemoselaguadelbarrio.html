@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gota a gota · Cuidemos el agua del barrio</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fbfaf4;--ink:#1c1c1a;--water:#3b8ed0;--good:#2e8b57;--bad:#c4392d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171715;--ink:#efece1;--water:#6db8ff;--good:#6fd39a;--bad:#ff8a7a;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#171715;--ink:#efece1;--water:#6db8ff;--good:#6fd39a;--bad:#ff8a7a;color-scheme:dark}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:"Patrick Hand","Comic Sans MS",cursive;font-size:20px;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;position:relative}
+#hud{display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;padding:8px 16px;border-bottom:3px solid var(--ink)}
+.sc small{display:block;font-size:15px;line-height:1}
+.sc b{font-size:40px;line-height:1;font-weight:400}
+.rk{min-width:150px}
+.bar{height:12px;width:150px;border:2px solid var(--ink);border-radius:8px 3px 8px 3px;overflow:hidden;margin-top:3px}
+#fill{display:block;height:100%;width:0;background:var(--water);transition:width .5s}
+.st{display:flex;flex-direction:column;font-size:17px;line-height:1.15}
+#wrap{flex:1;min-height:0;position:relative}
+#stage{height:100%;overflow-x:auto;overflow-y:hidden}
+svg{display:block;height:100%;width:100%;min-width:940px}
+.ink{filter:url(#wob)}
+.l{fill:var(--paper);stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.n{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.k{fill:var(--ink)}
+.h{fill:transparent}
+.w{fill:none;stroke:var(--water);stroke-width:4;stroke-linecap:round;stroke-dasharray:7 9;animation:flow .7s linear infinite}
+.wf{fill:var(--water);fill-opacity:.3;stroke:var(--water);stroke-width:2.5}
+.ok{fill:none;stroke:var(--good);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.pd{transform-box:fill-box;transform-origin:center;animation:pd 3s ease-in-out infinite alternate}
+@keyframes flow{to{stroke-dashoffset:-16}}
+@keyframes pd{from{transform:scaleX(.7)}to{transform:scaleX(1.3)}}
+.item{cursor:pointer;transform-box:fill-box;transform-origin:50% 100%}
+.item[data-s="good"] .bad,.item[data-s="bad"] .good{display:none}
+.pop{animation:pop .4s}
+@keyframes pop{30%{transform:scale(1.1,.9)}60%{transform:scale(.96,1.06)}}
+.sign{position:absolute;left:50%;top:10px;pointer-events:none;transform:translateX(-50%);width:min(560px,92vw);box-sizing:border-box;background:var(--paper);border:3px solid var(--ink);border-radius:14px 4px 16px 5px/5px 16px 4px 14px;box-shadow:5px 5px 0 var(--ink);padding:10px 16px 12px;animation:sin .35s;z-index:20}
+.sign[hidden]{display:none}
+.sign b{display:block;font-weight:400;font-size:24px;line-height:1.1}
+.sign span{display:block;line-height:1.25;margin-top:3px}
+.sign i{position:absolute;right:14px;top:8px;font-style:normal;font-size:30px}
+.sign.good b,.sign.good i{color:var(--good)}
+.sign.bad b,.sign.bad i{color:var(--bad)}
+@keyframes sin{from{opacity:0;transform:translate(-50%,-24px) rotate(-1.5deg)}}
+#fact{padding:8px 16px;border-top:3px solid var(--ink);font-size:17px;min-height:1.3em}
+.fl{position:fixed;font-size:36px;pointer-events:none;z-index:30;animation:up 1.2s forwards;text-shadow:0 0 5px var(--paper),0 0 5px var(--paper),0 0 5px var(--paper)}
+.fl.good{color:var(--good)}.fl.bad{color:var(--bad)}
+@keyframes up{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-80px)}}
+#intro{position:absolute;inset:0;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:40;gap:10px}
+#intro[hidden]{display:none}
+#intro h1{font-size:clamp(46px,10vw,84px);font-weight:400;margin:0;line-height:1}
+#intro p{max-width:34ch;margin:0;line-height:1.3}
+#go{font:inherit;font-size:28px;color:var(--ink);background:var(--paper);border:3px solid var(--ink);border-radius:14px 4px 16px 5px/5px 16px 4px 14px;box-shadow:5px 5px 0 var(--ink);padding:6px 34px;cursor:pointer;margin-top:10px}
+#go:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+#go:focus-visible{outline:3px dashed var(--water);outline-offset:4px}
+#rs{font:inherit;font-size:18px;color:var(--ink);background:var(--paper);border:3px solid var(--ink);border-radius:10px 3px 12px 4px/4px 12px 3px 10px;padding:2px 14px;cursor:pointer;margin-left:auto}
+#rs:active{transform:translate(2px,2px)}
+#rs:focus-visible{outline:3px dashed var(--water);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.w,.pd{animation:none}}
+</style>
+</head>
+<body>
+<div id="app">
+<header id="hud">
+  <div class="sc"><small>Puntaje</small><b id="score">0</b></div>
+  <div class="rk"><span id="rank">Gotita</span><div class="bar"><i id="fill"></i></div></div>
+  <div class="st"><span id="pend"></span><span id="lit"></span></div>
+  <button id="rs" type="button">Reiniciar</button>
+</header>
+<div id="wrap">
+<div id="stage">
+<svg id="map" viewBox="0 0 1100 520" role="img" aria-label="Un barrio dibujado a mano con varios derroches de agua">
+<defs>
+<filter id="wob" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter>
+<path id="cloud" d="M10 40Q-5 40 2 26Q8 14 24 18Q30 0 52 6Q68-4 82 14Q104 12 106 28Q108 40 92 40Z"/>
+</defs>
+
+<g class="ink">
+  <use href="#cloud" class="l" transform="translate(120 45)"/>
+  <use href="#cloud" class="l" transform="translate(640 30) scale(.8)"/>
+  <g transform="translate(470 65)"><circle class="l" r="26"/><path class="n" d="M0-40V-52M0 40V52M-40 0H-52M40 0H52M28-28l8-8M-28-28l-8-8M28 28l8 8M-28 28l-8 8"/></g>
+  <path class="n" d="M0 400H1100M0 428H1100"/>
+  <path class="n" style="stroke-dasharray:24 20" d="M0 482H1100"/>
+  <path id="hatch" class="n" style="stroke-width:2;opacity:.5" d=""/>
+  <!-- casa 1 -->
+  <rect class="l" x="205" y="118" width="24" height="60"/>
+  <rect class="l" x="40" y="215" width="215" height="185"/>
+  <path class="l" d="M25 220L148 130L270 220Z"/>
+  <rect class="l" x="70" y="320" width="45" height="80"/><circle class="k" cx="105" cy="362" r="3"/>
+  <rect class="l" x="66" y="245" width="50" height="45"/><path class="n" d="M91 245V290M66 267H116"/>
+  <rect class="l" x="140" y="250" width="90" height="80"/><path class="n" d="M133 334H237"/>
+  <!-- árbol -->
+  <path class="l" d="M347 400V350H363V400"/>
+  <circle class="l" cx="355" cy="310" r="45"/><path class="n" d="M335 300q10-8 20 0M350 325q10-8 22 0"/>
+  <!-- pasto -->
+  <path class="n" d="M410 400l-4-12M410 400l2-14M410 400l8-10M440 400l-3-10M440 400l5-12M545 400l-4-12M545 400l3-14M545 400l9-9"/>
+  <!-- casa 2 -->
+  <rect class="l" x="870" y="215" width="150" height="185"/>
+  <path class="l" d="M855 218L945 140L1035 218Z"/>
+  <rect class="l" x="885" y="330" width="40" height="70"/><circle class="k" cx="917" cy="365" r="3"/>
+  <rect class="l" x="945" y="250" width="55" height="55"/><path class="n" d="M972 250V305M945 277H1000"/>
+  <path class="n" d="M1025 222V335"/>
+</g>
+
+<!-- lluvia -->
+<g class="ink">
+  <use href="#cloud" class="l" transform="translate(900 40) scale(1.3)"/>
+  <path class="w" d="M925 104v14M955 104v18M985 104v14M1010 104v16"/>
+</g>
+
+<!-- 1. canilla del jardín -->
+<g class="item ink" id="i-tap" data-s="bad">
+  <rect class="h" x="262" y="340" width="76" height="68"/>
+  <path class="n" d="M285 400V366H306V374M285 366V358"/>
+  <g class="bad"><path class="n" d="M274 358H296"/><path class="w" d="M306 378V400"/><ellipse class="wf pd" cx="306" cy="404" rx="26" ry="6"/></g>
+  <g class="good"><path class="n" d="M277 350L293 358"/><path class="ok" d="M300 336l5 5 10-12"/></g>
+</g>
+
+<!-- 2. chico cepillándose -->
+<g class="item ink" id="i-kid" data-s="bad">
+  <rect class="h" x="136" y="246" width="98" height="90"/>
+  <path class="l" d="M158 330Q160 303 180 300Q200 303 202 330Z"/>
+  <circle class="l" cx="180" cy="283" r="15"/>
+  <circle class="k" cx="174" cy="281" r="2"/><circle class="k" cx="186" cy="281" r="2"/>
+  <path class="n" d="M215 330V304Q215 298 208 298"/>
+  <g class="bad"><ellipse class="l" cx="180" cy="290" rx="3.5" ry="2.5"/><path class="n" d="M196 306L186 291"/><path class="w" d="M208 301V322"/></g>
+  <g class="good"><path class="n" d="M174 289Q180 295 186 289"/><path class="l" d="M193 296h14l-2 16h-10z"/><path class="ok" d="M148 262l5 5 10-12"/></g>
+</g>
+
+<!-- 3. riego al mediodía -->
+<g class="item ink" id="i-spr" data-s="bad">
+  <rect class="h" x="396" y="296" width="180" height="110"/>
+  <path class="n" d="M485 400V380"/><rect class="l" x="478" y="370" width="14" height="10"/>
+  <g class="bad"><path class="w" d="M480 372Q440 318 405 392"/><path class="w" d="M490 372Q530 318 565 392"/><path class="w" d="M485 368Q485 320 520 392"/></g>
+  <g class="good"><rect class="l" x="440" y="372" width="34" height="26" rx="5"/><path class="n" d="M474 380L498 362L503 367M440 378Q424 384 440 394"/><path class="w" d="M503 372V396"/><path class="n" d="M525 400V376"/><circle class="l" cx="525" cy="370" r="7"/><path class="ok" d="M420 340l5 5 10-12"/></g>
+</g>
+
+<!-- 4. auto -->
+<g class="item ink" id="i-car" data-s="bad">
+  <rect class="h" x="575" y="300" width="290" height="110"/>
+  <path class="l" d="M585 394V368Q585 358 598 356L630 352L650 330Q655 324 665 324H715Q725 324 732 332L748 354L765 358Q775 360 775 372V394Z"/>
+  <path class="l" d="M642 352L656 334H690V352ZM698 352V334H714L728 352Z"/>
+  <circle class="l" cx="625" cy="395" r="15"/><circle class="l" cx="735" cy="395" r="15"/><circle class="k" cx="625" cy="395" r="3"/><circle class="k" cx="735" cy="395" r="3"/>
+  <circle class="l" cx="815" cy="330" r="13"/><circle class="k" cx="810" cy="328" r="2"/><path class="n" d="M815 343V375M815 375L805 400M815 375L827 400"/>
+  <g class="bad"><path class="n" d="M815 352L796 346"/><path class="n" d="M796 346Q800 384 850 392"/><path class="w" d="M790 347Q745 290 700 326"/><ellipse class="wf pd" cx="680" cy="405" rx="95" ry="7"/></g>
+  <g class="good"><path class="n" d="M815 352L800 372"/><path class="l" d="M780 374H804L800 400H784Z"/><circle class="l" cx="787" cy="372" r="5"/><circle class="l" cx="797" cy="370" r="4"/><circle class="l" cx="690" cy="320" r="5"/><circle class="l" cx="710" cy="316" r="4"/><path class="ok" d="M648 296l5 5 10-12"/></g>
+</g>
+
+<!-- 5. caño roto -->
+<g class="item ink" id="i-leak" data-s="bad">
+  <rect class="h" x="430" y="400" width="150" height="75"/>
+  <ellipse class="l" cx="500" cy="456" rx="34" ry="9"/>
+  <g class="bad"><path class="n" d="M492 452l8-6 6 5"/><path class="w" d="M500 452V420"/><path class="w" d="M500 452Q478 405 462 446"/><path class="w" d="M500 452Q522 405 538 446"/><path class="w" d="M468 466Q400 474 330 466T200 470"/><ellipse class="wf pd" cx="500" cy="462" rx="46" ry="7"/></g>
+  <g class="good"><path class="l" d="M488 452L500 418L512 452Z"/><path class="n" d="M492 440H508"/><rect class="l" x="482" y="452" width="36" height="6"/><path class="ok" d="M540 428l5 5 10-12"/></g>
+</g>
+
+<!-- 6. agua de lluvia -->
+<g class="item ink" id="i-rain" data-s="bad">
+  <rect class="h" x="1000" y="225" width="100" height="185"/>
+  <g class="bad"><path class="n" d="M1025 335V400"/><path class="w" d="M1029 340V400"/><path class="w" d="M1029 404Q990 412 930 408"/><rect class="n" style="stroke-dasharray:6 7" x="1036" y="350" width="50" height="50" rx="8"/></g>
+  <g class="good"><path class="n" d="M1025 335H1061V350"/><rect class="l" x="1036" y="350" width="50" height="50" rx="8"/><path class="n" d="M1036 366H1086M1036 384H1086"/><path class="w" d="M1042 372q8-5 16 0t16 0"/><path class="w" d="M1061 337V350"/><path class="ok" d="M1050 322l5 5 10-12"/></g>
+</g>
+</svg>
+</div>
+<div id="sign" class="sign" hidden><i id="sp"></i><b id="st"></b><span id="sx"></span></div>
+</div>
+<footer id="fact"></footer>
+<div id="intro">
+  <h1>Gota a gota</h1>
+  <p>Recorré el barrio (deslizá hacia los costados) y tocá todo lo que gaste agua de más.</p>
+  <p>Las buenas acciones suman puntos y los derroches restan. ¡Y el agua se pierde mientras mirás!</p>
+  <button id="go">Empezar</button>
+</div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const I={
+ tap:{tick:-1,tl:20,fix:10,refix:5,lit:60,
+  gt:"¡Canilla cerrada!",gm:"Una canilla abierta gasta unos 12 litros por minuto. Cerrarla bien es el hábito más simple para cuidar el agua.",
+  bt:"¡La canilla quedó abierta!",bm:"Hasta un goteo constante puede perder más de 20 litros por día. Revisá las juntas y cerrala bien."},
+ kid:{tick:-1,tl:10,fix:10,refix:5,lit:10,
+  gt:"¡Cepillado con vasito!",gm:"Cepillarse los dientes con un vasito ahorra hasta 10 litros por vez. Abrí la canilla solo para enjuagar.",
+  bt:"¡Cepillado con la canilla abierta!",bm:"Mientras te cepillás, el agua corre sin que la uses. Cerrar la canilla ahorra hasta 10 litros cada vez."},
+ spr:{tick:-1,tl:40,fix:10,refix:5,lit:100,
+  gt:"¡Riego inteligente!",gm:"Regar temprano o al atardecer, con regadera y solo lo necesario, evita que el sol evapore el agua.",
+  bt:"¡Riego al mediodía!",bm:"Con el sol fuerte, gran parte del agua se evapora antes de llegar a las raíces. Mejor regar temprano o al atardecer."},
+ car:{tick:-1,tl:60,fix:10,refix:5,lit:250,
+  gt:"¡Auto lavado con balde!",gm:"Con balde y esponja alcanza con unos 40 litros. Con la manguera abierta se pueden ir cientos.",
+  bt:"¡Lavando el auto con manguera!",bm:"Una manguera abierta gasta cientos de litros en un solo lavado. ¡Usá balde y esponja!"},
+ leak:{tick:-1,tl:100,fix:15,refix:5,lit:500,
+  gt:"¡Pérdida reportada!",gm:"Avisar a tiempo a la empresa prestadora cuando ves una pérdida en la calle evita que se desperdicien miles de litros por día.",
+  bt:"¡Hay un caño roto en la calle!",bm:"Una pérdida así puede desperdiciar miles de litros por día. Si ves una, avisá a la prestadora del servicio."},
+ rain:{tick:0,tl:0,fix:10,refix:0,lit:80,
+  gt:"¡Juntás agua de lluvia!",gm:"El agua de lluvia se puede guardar para regar plantas o limpiar. Es agua que no hace falta potabilizar.",
+  bt:"",bm:""}
+};
+const RK=[[-1e9,"Canilla goteando"],[0,"Gotita"],[40,"Arroyo"],[100,"Río"],[180,"Guardián del agua"]];
+const F=["Una ducha corta de 5 minutos gasta mucho menos agua que una de 15.",
+ "Una pérdida en el inodoro puede desperdiciar cientos de litros por día sin que nadie la note.",
+ "Solo una pequeña parte del agua del planeta es dulce y accesible para el consumo.",
+ "Cerrar la canilla mientras te enjabonás las manos o los platos ahorra litros todos los días.",
+ "Barrer la vereda en lugar de mojarla con manguera cuida el agua y lleva el mismo tiempo."];
+const st={score:0,saved:0,wasted:0,go:false,once:{},cele:false};
+const el=id=>document.getElementById("i-"+id);
+const state=id=>el(id).dataset.s;
+const setS=(id,s)=>{el(id).dataset.s=s};
+const pend=()=>Object.keys(I).filter(k=>state(k)==="bad").length;
+
+function hud(){
+  $("#score").textContent=st.score;
+  let r=0;RK.forEach((k,i)=>{if(st.score>=k[0])r=i});
+  $("#rank").textContent=RK[r][1];
+  const n=RK[r+1];
+  $("#fill").style.width=(r===0?0:n?Math.max(0,(st.score-RK[r][0])/(n[0]-RK[r][0]))*100:100)+"%";
+  const p=pend();
+  $("#pend").textContent=p?"Por resolver: "+p:"¡Todo en orden!";
+  $("#lit").textContent="Ahorrados "+st.saved+" L · Perdidos "+st.wasted+" L";
+}
+function say(t,x,k,p){
+  const s=$("#sign");s.className="sign "+k;
+  $("#st").textContent=t;$("#sx").textContent=x;$("#sp").textContent=p||"";
+  s.hidden=false;s.style.animation="none";void s.offsetWidth;s.style.animation="";
+  clearTimeout(say.t);say.t=setTimeout(()=>{s.hidden=true},9000);
+}
+function float(txt,k,node){
+  const r=node.getBoundingClientRect(),d=document.createElement("div");
+  d.className="fl "+k;d.textContent=txt;
+  d.style.left=(r.left+r.width/2+(Math.random()*30-15))+"px";
+  d.style.top=(r.top+r.height/3)+"px";
+  document.body.appendChild(d);setTimeout(()=>d.remove(),1200);
+}
+function check(){
+  if(pend()===0&&!st.cele){st.cele=true;
+    say("¡Barrio cuidado!","Entre todos cuidamos el agua. Pero ojo: los malos hábitos vuelven si nos descuidamos.","good");}
+  if(pend()>0)st.cele=false;
+}
+
+document.getElementById("map").addEventListener("click",e=>{
+  const g=e.target.closest(".item");if(!g||!st.go)return;
+  const id=g.id.slice(2),it=I[id];
+  g.classList.remove("pop");void g.getBoundingClientRect();g.classList.add("pop");
+  if(state(id)==="bad"){
+    const pts=st.once[id]?it.refix:it.fix;st.once[id]=1;
+    st.score+=pts;st.saved+=it.lit;setS(id,"good");
+    say(it.gt,it.gm,"good","+"+pts);float("+"+pts,"good",g);
+  }else if(id==="rain"){
+    say("Ya juntás agua de lluvia","Aprovechala para regar tus plantas.","good");
+  }else{
+    st.score-=10;st.wasted+=it.lit>>1;setS(id,"bad");
+    say(it.bt,it.bm,"bad","-10");float("-10","bad",g);
+  }
+  hud();check();
+});
+const g_anim=e=>e.target.classList.remove("pop");
+document.getElementById("map").addEventListener("animationend",g_anim);
+
+setInterval(()=>{
+  if(!st.go)return;
+  for(const id in I){const it=I[id];
+    if(it.tick&&state(id)==="bad"){st.score+=it.tick;st.wasted+=it.tl;float(it.tick,"bad",el(id));}}
+  hud();
+},5000);
+
+let rt;
+function relapse(){
+  if(st.go){
+    const g=Object.keys(I).filter(k=>k!=="rain"&&state(k)==="good");
+    if(g.length){const id=g[Math.random()*g.length|0];setS(id,"bad");say(I[id].bt,I[id].bm,"bad");hud();check();}
+  }
+  rt=setTimeout(relapse,14000+Math.random()*8000);
+}
+
+let fi=0;
+function fact(){$("#fact").textContent="¿Sabías que? "+F[fi++%F.length]}
+fact();setInterval(fact,16000);
+
+const H=[];for(let i=0;i<46;i++){H.push("M"+(Math.random()*1090|0)+" "+(496+Math.random()*16|0)+"l7-5")}
+$("#hatch").setAttribute("d",H.join(""));
+
+function begin(){
+  Object.assign(st,{score:0,saved:0,wasted:0,once:{},cele:false,go:true});
+  Object.keys(I).forEach(k=>setS(k,"bad"));
+  document.querySelectorAll(".fl").forEach(n=>n.remove());
+  hud();
+  say("Mirá a tu alrededor","Hay agua corriendo por todos lados. Tocá lo que derroche para frenarlo.","info");
+  clearTimeout(rt);rt=setTimeout(relapse,16000);
+}
+$("#go").addEventListener("click",()=>{$("#intro").hidden=true;begin();});
+$("#rs").addEventListener("click",begin);
+hud();
+</script>
+</body>
+</html>
